@@ -3,3 +3,7 @@
   --font-color: #25343F;
   --comp-color: #FF9B51;
 }
+
+body {
+    margin: 0;
+}
