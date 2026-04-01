@@ -18,7 +18,7 @@
         <div class="relative w-64 h-64 rounded-full bg-white shadow-xl flex flex-col items-center justify-center border-[8px] border-[var(--comp-color)] mb-8 flex-shrink-0">
           <img src="./assets/logo.png" alt="Trotineta" class="w-24 h-24 object-contain mb-4" />
           <p class="text-5xl font-extrabold text-[var(--font-color)]">
-            <span>100%</span>
+            <span id="bateria">100%</span>
           </p>
         </div>
       </main>
@@ -29,5 +29,28 @@
         <a href="controlador.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Controlador</a>
       </footer>
     </section>
+
+    <script>
+      // Automatically receive data from App Inventor's WebViewString
+      function checkAppInventorData() {
+        if (window.AppInventor) {
+          const webString = window.AppInventor.getWebViewString();
+          if (webString) {
+            const bateriaElement = document.getElementById("bateria");
+            if (bateriaElement) {
+              // Assuming the WebViewString is just the number (e.g. "85" or "85%")
+              bateriaElement.innerText = webString.includes("%") ? webString : webString + "%";
+            }
+          }
+        }
+      }
+
+      // Check initially when the page loads
+      window.onload = function() {
+        checkAppInventorData();
+        // Constantly poll for updates so it updates automatically when the string changes
+        setInterval(checkAppInventorData, 1000);
+      };
+    </script>
   </body>
 </html>
