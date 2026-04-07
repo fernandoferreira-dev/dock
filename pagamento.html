@@ -68,6 +68,14 @@
           btn.innerHTML = 'Confirmar Pagamento';
           btn.disabled = false;
           btn.classList.remove('opacity-50');
+          
+          // Envia o valor pago como número inteiro para o App Inventor
+          const valorInput = document.getElementById('valor').value;
+          const valorInteiro = Math.floor(Number(valorInput));
+          if (window.AppInventor) {
+            window.AppInventor.setWebViewString(valorInteiro.toString());
+          }
+
           e.target.reset();
           
           msg.classList.remove('hidden');
