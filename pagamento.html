@@ -74,16 +74,8 @@
           // Garante que é tratado como inteiro (ex: 10.50 vira 10)
           const valorInteiro = Math.floor(Number(valorInput));
           
-          if (typeof window.AppInventor !== 'undefined') {
-            // Limpa primeiro para forçar a mudança se o valor for o mesmo duas vezes
-            window.AppInventor.setWebViewString("");
-            // Em seguida envia o valor final
-            setTimeout(() => {
+            if (window.AppInventor) {
               window.AppInventor.setWebViewString(valorInteiro.toString());
-            }, 100);
-          } else {
-            // Mostra isso caso a página tenha sido aberta no navegador e não dentro do App Inventor
-            alert("✅ Simulação de Pagamento:\n\nValor inteiro enviado para o app: " + valorInteiro);
           }
 
           e.target.reset();
