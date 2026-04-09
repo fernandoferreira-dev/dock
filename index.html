@@ -31,6 +31,9 @@
     </section>
 
     <script>
+      // Guarda valores históricos de bateria para o gráfico localmente (opcionalmente pode vir do Supabase)
+      if (!window.bateriaHistorico) window.bateriaHistorico = [];
+
       // Automatically receive data from App Inventor's WebViewString
       function checkAppInventorData() {
         if (window.AppInventor) {
@@ -38,8 +41,26 @@
           if (webString) {
             const bateriaElement = document.getElementById("bateria");
             if (bateriaElement) {
-              // Assuming the WebViewString is just the number (e.g. "85" or "85%")
-              bateriaElement.innerText = webString.includes("%") ? webString : webString + "%";
+              // Verifica se vem do ESP32 no formato "SPACES: s,b | s,b | s,b | s,b"
+              if (webString.includes("SPACES:")) {
+                // Remove prefixo e divide pelos slots
+                const slotsStr = webString.replace("SPACES:", "").trim().split("|");
+                // Vamos supor que a trotinete deste cliente é o Slot 1 (s0 no código do esp) ou procure o primeiro slot ocupado com bateria > 0
+                let bateriaEncontrada = "0%";
+                for (let i = 0; i < slotsStr.length; i++) {
+                  const s = slotsStr[i].trim().split(",");
+                  if (s[0] === "1") { // Se estiver ocupado, s == 1
+                    bateriaEncontrada = s[1].trim() + "%";
+                    break;
+                  }
+                }
+                bateriaElement.innerText = bateriaEncontrada;
+                localStorage.setItem('bateriaAtual', bateriaEncontrada.replace('%', ''));
+              } else {
+                // Caso o AppInventor retorne apenas um número diretamente
+                bateriaElement.innerText = webString.includes("%") ? webString : webString + "%";
+                localStorage.setItem('bateriaAtual', webString.replace('%', ''));
+              }
             }
           }
         }

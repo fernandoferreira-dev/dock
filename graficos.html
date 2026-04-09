@@ -14,20 +14,96 @@
         <button class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all">Configurações</button>
       </nav>
       
-      <main class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto">
-        <div class="relative w-64 h-64 rounded-full bg-white shadow-xl flex flex-col items-center justify-center border-[8px] border-[var(--comp-color)] mb-8 flex-shrink-0">
-          <img src="./assets/logo.png" alt="Trotineta" class="w-24 h-24 object-contain mb-4" />
-          <p class="text-5xl font-extrabold text-[var(--font-color)]">
-            <span>100%</span>
-          </p>
+      <main class="flex-1 flex flex-col items-center justify-start p-6 w-full max-w-lg mx-auto">
+        <h1 class="text-2xl font-extrabold mb-6 text-center text-[var(--comp-color)]">Evolução da Bateria</h1>
+        
+        <div class="bg-white p-4 rounded-xl shadow-lg w-full mb-8">
+          <canvas id="bateriaChart"></canvas>
         </div>
+
+        <p class="text-sm text-center text-gray-400 mt-2">Dica: Os dados atualizam baseados no ESP32 do dispositivo.</p>
       </main>
 
-      <footer class="flex w-full mt-auto bg-[var(--font-color)] text-[var(--bg-color)]">
-        <a href="graficos.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300">Gráficos</a>
-        <a href="index.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider bg-[var(--comp-color)] text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Home</a>
+      <footer class="flex w-full mt-auto bg-[var(--font-color)] text-[var(--bg-color)] cursor-pointer">
+        <a href="graficos.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider bg-[var(--comp-color)] text-[var(--font-color)] transition-colors duration-300">Gráficos</a>
+        <a href="index.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Home</a>
         <a href="controlador.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Controlador</a>
       </footer>
     </section>
+
+    <!-- Script do Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      let chart;
+      
+      // Simulação inicial de log: Array de {hora, nivel}
+      let bateriaLog = JSON.parse(localStorage.getItem('bateriaHistorico')) || [];
+
+      function renderizarGrafico() {
+        const ctx = document.getElementById('bateriaChart').getContext('2d');
+        
+        // Garante que mostramos pelo menos dados vazios se não houver histórico
+        const labels = bateriaLog.length > 0 ? bateriaLog.map(d => d.hora) : ['Agora', '', '', '', ''];
+        const data = bateriaLog.length > 0 ? bateriaLog.map(d => d.nivel) : [100, 100, 100, 100, 100];
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nível de Bateria (%)',
+                    data: data,
+                    borderColor: '#2D3748', // Cor parecida com var(--font-color)
+                    backgroundColor: 'rgba(45, 55, 72, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.3, // linha curva bonita
+                    fill: true,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#2D3748',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+      }
+
+      // Função que vai ler do LocalStorage (onde o index.html espetou o valor do ESP) e atualiza gráfico em real-time
+      function monitorarESP32bateria() {
+        const cargaAtualStr = localStorage.getItem('bateriaAtual');
+        if (cargaAtualStr) {
+          let cargaAtualInt = parseInt(cargaAtualStr);
+          let agora = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+          
+          // Adiciona ao fim do log
+          bateriaLog.push({hora: agora, nivel: cargaAtualInt});
+          
+          // Mantém só os últimos 10 pontos de dados para não entupir a tela
+          if (bateriaLog.length > 10) bateriaLog.shift();
+          
+          // Salva para persistir
+          localStorage.setItem('bateriaHistorico', JSON.stringify(bateriaLog));
+
+          // Refresh gráfico se já foi renderizado
+          if(chart) {
+            chart.data.labels = bateriaLog.map(d => d.hora);
+            chart.data.datasets[0].data = bateriaLog.map(d => d.nivel);
+            chart.update();
+          }
+        }
+      }
+
+      // Inicializa
+      renderizarGrafico();
+      // A cada 3 segundos vai buscar a bateria enviada pelo ESP32 via Bluetooth (passada do AppInventor -> WebView)
+      setInterval(monitorarESP32bateria, 3000);
+    </script>
   </body>
 </html>
