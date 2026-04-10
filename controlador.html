@@ -52,9 +52,6 @@
           </button>
         </div>
 
-        <div id="status-msg" class="h-10 mt-4 px-6 py-2 rounded-full opacity-0 scale-95 transition-all duration-300 font-extrabold text-lg text-center flex items-center justify-center tracking-widest shadow-md">
-          <!-- Text dynamically loaded here -->
-        </div>
       </main>
 
       <footer class="flex w-full mt-auto bg-[var(--font-color)] text-[var(--bg-color)]">
@@ -69,6 +66,35 @@
       if(localStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html";
       }
+
+      function atualizarCoresBotoes() {
+        const isAberto = localStorage.getItem('cacifoAberto') === 'true';
+        
+        const btnU = document.getElementById('btn-unlock');
+        const contU = document.getElementById('unlock-content');
+        const btnL = document.getElementById('btn-lock');
+        const contL = document.getElementById('lock-content');
+
+        if (isAberto) {
+          btnU.classList.replace('bg-gray-200', 'bg-green-500');
+          btnU.classList.replace('text-gray-500', 'text-white');
+          contU.classList.replace('text-gray-600', 'text-white');
+
+          btnL.classList.replace('bg-red-500', 'bg-gray-200');
+          btnL.classList.replace('text-white', 'text-gray-500');
+          contL.classList.replace('text-white', 'text-gray-600');
+        } else {
+          btnU.classList.replace('bg-green-500', 'bg-gray-200');
+          btnU.classList.replace('text-white', 'text-gray-500');
+          contU.classList.replace('text-white', 'text-gray-600');
+
+          btnL.classList.replace('bg-gray-200', 'bg-red-500');
+          btnL.classList.replace('text-gray-500', 'text-white');
+          contL.classList.replace('text-gray-600', 'text-white');
+        }
+      }
+
+      window.onload = atualizarCoresBotoes;
 
       // --- LOGICA DE SEGURAR PARA DESBLOQUEAR ---
       let unlockTimer;
@@ -85,8 +111,6 @@
           enviarComando('UNLOCK');
           progresso.style.transitionDuration = '0.2s';
           progresso.style.width = '0%';
-          content.classList.remove('text-white');
-          content.classList.add('text-gray-600');
           if (navigator.vibrate) navigator.vibrate(200);
         }, 1500);
       }
@@ -94,12 +118,10 @@
       function cancelarDesbloqueio() {
         clearTimeout(unlockTimer);
         const progresso = document.getElementById('unlock-progress');
-        const content = document.getElementById('unlock-content');
         
         progresso.style.transitionDuration = '0.3s';
         progresso.style.width = '0%';
-        content.classList.remove('text-white');
-        content.classList.add('text-gray-600');
+        atualizarCoresBotoes();
       }
 
       // --- LOGICA DE SEGURAR PARA BLOQUEAR (fecha) ---
@@ -117,8 +139,6 @@
           enviarComando('LOCK');
           progresso.style.transitionDuration = '0.2s';
           progresso.style.width = '0%';
-          content.classList.remove('text-white');
-          content.classList.add('text-gray-600');
           if (navigator.vibrate) navigator.vibrate(200);
         }, 1500);
       }
@@ -126,12 +146,10 @@
       function cancelarBloqueio() {
         clearTimeout(lockTimer);
         const progresso = document.getElementById('lock-progress');
-        const content = document.getElementById('lock-content');
         
         progresso.style.transitionDuration = '0.3s';
         progresso.style.width = '0%';
-        content.classList.remove('text-white');
-        content.classList.add('text-gray-600');
+        atualizarCoresBotoes();
       }
 
 
@@ -155,24 +173,7 @@
           localStorage.setItem('cacifoAberto', 'false');
         }
         
-        // Efeito visual bonitinho no momento do clique
-        msg.innerText = acao === 'UNLOCK' ? "Aberto" : "Fechado";
-        
-        // Estado inicial visível com o texto trocado e scale em pop-in
-        msg.classList.remove('opacity-0', 'scale-95');
-        msg.classList.add('opacity-100', 'scale-100');
-        
-        // Cores de fundo consistentes com moderno UI ao invés de apenas mudar a cor da fonte
-        if (acao === 'UNLOCK') {
-            msg.className = "h-10 mt-4 px-6 py-2 rounded-full transition-all duration-300 font-extrabold text-lg text-center flex items-center justify-center tracking-widest shadow-md text-green-700 bg-green-100 border border-green-300 opacity-100 scale-100";
-        } else {
-            msg.className = "h-10 mt-4 px-6 py-2 rounded-full transition-all duration-300 font-extrabold text-lg text-center flex items-center justify-center tracking-widest shadow-md text-red-700 bg-red-100 border border-red-300 opacity-100 scale-100";
-        }
-        
-        setTimeout(() => { 
-           msg.classList.replace('opacity-100', 'opacity-0'); 
-           msg.classList.replace('scale-100', 'scale-95'); 
-        }, 2000);
+        atualizarCoresBotoes();
       }
     </script>
   </body>
