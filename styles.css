@@ -1,41 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800;900&display=swap');
+
 :root {
-  --bg-color: #EAEFEF;
-  --font-color: #25343F;
-  --comp-color: #FF9B51;
+  /* Modo Claro - Mais limpo (Light Slate) */
+  --bg-color: #F1F5F9; 
+  --font-color: #0F172A; 
+  /* Cor de Destaque - Laranja Vibrante / Tech */
+  --comp-color: #F97316; 
 }
 
 [data-theme="dark"] {
-  --bg-color: #25343F;
-  --font-color: #EAEFEF;
+  /* Modo Escuro - Profundo e moderno (Dark Slate/Navy) */
+  --bg-color: #0B1120;
+  --font-color: #F8FAFC; 
 }
 
 body {
     margin: 0;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
+
+h1, h2, h3, .font-extrabold, .font-black, .tracking-wider, .tracking-widest {
+    font-family: 'Outfit', sans-serif;
 }
+
+/* Modificações específicas do Modo Noturno */
 [data-theme="dark"] .bg-white {
-  background-color: #1F2937 !important; /* gray-800 equivalent */
-  color: #F3F4F6 !important; /* text inversion */
+  background-color: #1E293B !important; 
+  color: #F8FAFC !important; 
+  border-color: #334155 !important;
 }
+
 [data-theme="dark"] .text-gray-800 {
-  color: #D1D5DB !important; /* lighter gray for titles */
+  color: #F1F5F9 !important; 
 }
+
 [data-theme="dark"] .text-gray-500, [data-theme="dark"] .text-gray-400 {
-  color: #9CA3AF !important; 
+  color: #94A3B8 !important; 
 }
+
 [data-theme="dark"] input, [data-theme="dark"] textarea {
-  background-color: #374151 !important;
+  background-color: #0f172a !important;
   color: white !important;
-  border-color: #4B5563 !important;
+  border-color: #334155 !important;
 }
+
 [data-theme="dark"] .bg-gray-200 {
-  background-color: #4B5563 !important;
+  background-color: #334155 !important;
   color: white !important;
 }
+
 [data-theme="dark"] .bg-red-100 {
-  background-color: #7f1d1d !important;
+  background-color: #450a0a !important;
   color: #fca5a5 !important;
+  border-color: #7f1d1d !important;
 }
+
 [data-theme="dark"] .text-red-600 {
-  color: #fca5a5 !important;
+  color: #f87171 !important;
 }
