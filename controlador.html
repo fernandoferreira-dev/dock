@@ -14,20 +14,52 @@
         <button class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all">Configurações</button>
       </nav>
       
-      <main class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto">
-        <div class="relative w-64 h-64 rounded-full bg-white shadow-xl flex flex-col items-center justify-center border-[8px] border-[var(--comp-color)] mb-8 flex-shrink-0">
-          <img src="./assets/logo.png" alt="Trotineta" class="w-24 h-24 object-contain mb-4" />
-          <p class="text-5xl font-extrabold text-[var(--font-color)]">
-            <span>100%</span>
-          </p>
+      <main class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto gap-8">
+        <h1 class="text-2xl font-extrabold mb-2 text-center text-[var(--font-color)]">Controlo Físico</h1>
+        
+        <button onclick="enviarComando('UNLOCK')" class="w-full py-8 text-2xl font-black tracking-wider rounded-2xl bg-green-500 text-white shadow-lg border-b-[6px] border-green-700 active:border-b-0 active:translate-y-[6px] transition-all flex flex-col items-center justify-center">
+          <span class="text-4xl mb-2">🔓</span>
+          ABRIR DOCK
+        </button>
+
+        <button onclick="enviarComando('LOCK')" class="w-full py-8 text-2xl font-black tracking-wider rounded-2xl bg-red-500 text-white shadow-lg border-b-[6px] border-red-700 active:border-b-0 active:translate-y-[6px] transition-all flex flex-col items-center justify-center">
+          <span class="text-4xl mb-2">🔒</span>
+          FECHAR DOCK
+        </button>
+
+        <div id="status-msg" class="h-6 mt-4 opacity-0 transition-opacity font-bold text-center flex-shrink-0">
+          Comando Enviado!
         </div>
       </main>
 
       <footer class="flex w-full mt-auto bg-[var(--font-color)] text-[var(--bg-color)]">
         <a href="graficos.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300">Gráficos</a>
-        <a href="index.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider bg-[var(--comp-color)] text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Home</a>
-        <a href="controlador.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Controlador</a>
+        <a href="index.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Home</a>
+        <a href="controlador.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider bg-[var(--comp-color)] text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Controlador</a>
       </footer>
     </section>
+
+    <script>
+      function enviarComando(acao) {
+        const msg = document.getElementById('status-msg');
+        
+        // Colocamos o prefixo 'CMD:' para o seu sistema distinguir que isto é para fechar portas e não dinheiro
+        const comando = "CMD:" + acao; 
+        
+        if (window.AppInventor) {
+          // O App inventor vai intercetar "CMD:UNLOCK"
+          window.AppInventor.setWebViewString(comando);
+        } else {
+          console.log("Comando Simulado na Web: " + comando);
+        }
+        
+        // Efeito visual bonitinho no momento do clique
+        msg.innerText = acao === 'UNLOCK' ? "Sinal de Abertura Enviado..." : "Sinal de Bloqueio Enviado...";
+        msg.classList.remove('opacity-0');
+        msg.style.color = acao === 'UNLOCK' ? '#10B981' : '#EF4444'; 
+        
+        setTimeout(() => { msg.classList.add('opacity-0'); }, 3000);
+      }
+    </script>
   </body>
 </html>
