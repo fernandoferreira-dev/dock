@@ -21,7 +21,7 @@
           <form onsubmit="verificarCodigo(event)" class="space-y-5">
             <div>
               <label class="block text-sm font-semibold mb-1">Código de Acesso</label>
-              <input type="password" id="codigoAcesso" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[var(--comp-color)] focus:outline-none transition-colors text-center text-2xl tracking-widest" placeholder="xxxx-xxxx", required>
+              <input type="text" id="codigoAcesso" oninput="formatCode(this)" maxlength="9" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[var(--comp-color)] focus:outline-none transition-colors text-center text-2xl tracking-widest" placeholder="xxxx-xxxx" required>
             </div>
 
             <button type="submit" class="w-full py-4 mt-6 bg-[var(--font-color)] text-[var(--bg-color)] font-extrabold rounded-xl uppercase tracking-widest hover:bg-[var(--comp-color)] hover:shadow-xl active:scale-95 transition-all duration-300 shadow-md">
@@ -37,6 +37,16 @@
     </section>
 
     <script>
+      function formatCode(input) {
+        // Remove tudo que não for alfanumérico
+        let val = input.value.replace(/[^a-zA-Z0-9]/g, '');
+        // Adiciona automaticamente o hífen após o 4º caractere
+        if (val.length > 4) {
+          val = val.substring(0, 4) + '-' + val.substring(4, 8);
+        }
+        input.value = val;
+      }
+
       function verificarCodigo(e) {
         e.preventDefault();
         const codigo = document.getElementById('codigoAcesso').value.trim();
