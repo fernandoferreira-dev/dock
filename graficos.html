@@ -37,29 +37,32 @@
       let chart;
       
       // Simulação inicial de log: Array de {hora, nivel}
-      let bateriaLog = JSON.parse(localStorage.getItem('bateriaHistorico')) || [];
+      // Lógica de cálculo do Carregamento (Bateria Aumentada vs Tempo Juntos)
+      let chargeLog = JSON.parse(localStorage.getItem('chargeLog')) || [];
+      // { tempoMs: , startBattery: } -> guarda o momento e a bateria exata que a trotinete tinha quando foi conectada
+      let startInfo = JSON.parse(localStorage.getItem('chargeStartInfo')) || null;
 
       function renderizarGrafico() {
         const ctx = document.getElementById('bateriaChart').getContext('2d');
         
-        // Garante que mostramos pelo menos dados vazios se não houver histórico
-        const labels = bateriaLog.length > 0 ? bateriaLog.map(d => d.hora) : ['Agora', '', '', '', ''];
-        const data = bateriaLog.length > 0 ? bateriaLog.map(d => d.nivel) : [100, 100, 100, 100, 100];
+        // Começa em 0s com 0% ganhos por padrão
+        const labels = chargeLog.length > 0 ? chargeLog.map(d => d.tempoStr) : ['0s'];
+        const data = chargeLog.length > 0 ? chargeLog.map(d => d.ganho) : [0];
 
         chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Nível de Bateria (%)',
+                    label: 'Bateria Carregada (+%)',
                     data: data,
-                    borderColor: '#2D3748', // Cor parecida com var(--font-color)
-                    backgroundColor: 'rgba(45, 55, 72, 0.1)',
+                    borderColor: '#10B981', // Verde esmeralda (energia)
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
                     borderWidth: 3,
-                    tension: 0.3, // linha curva bonita
+                    tension: 0.3,
                     fill: true,
                     pointBackgroundColor: '#fff',
-                    pointBorderColor: '#2D3748',
+                    pointBorderColor: '#10B981',
                     pointRadius: 4
                 }]
             },
@@ -68,42 +71,61 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 100
+                        title: { display: true, text: 'Ganho Energético (%)', font: { weight: 'bold' } }
+                    },
+                    x: {
+                        title: { display: true, text: 'Tempo a carregar na Dock', font: { weight: 'bold' } }
                     }
                 }
             }
         });
       }
 
-      // Função que vai ler do LocalStorage (onde o index.html espetou o valor do ESP) e atualiza gráfico em real-time
-      function monitorarESP32bateria() {
-        const cargaAtualStr = localStorage.getItem('bateriaAtual');
-        if (cargaAtualStr) {
-          let cargaAtualInt = parseInt(cargaAtualStr);
-          let agora = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+      function calcularRelacaoCarga() {
+        const bateriaVindaDoESP = localStorage.getItem('bateriaAtual');
+        
+        if (bateriaVindaDoESP) {
+          let bateriaAtualInt = parseInt(bateriaVindaDoESP);
           
-          // Adiciona ao fim do log
-          bateriaLog.push({hora: agora, nivel: cargaAtualInt});
-          
-          // Mantém só os últimos 10 pontos de dados para não entupir a tela
-          if (bateriaLog.length > 10) bateriaLog.shift();
-          
-          // Salva para persistir
-          localStorage.setItem('bateriaHistorico', JSON.stringify(bateriaLog));
+          // Se não houver sessão de carga registrada, ou se a bateria DE REPENTE DIMINUIU muito (alguém a retirou e colocou outra vazia)
+          if (!startInfo || bateriaAtualInt < startInfo.startBattery) {
+            startInfo = { tempoMs: Date.now(), startBattery: bateriaAtualInt };
+            localStorage.setItem('chargeStartInfo', JSON.stringify(startInfo));
+            chargeLog = []; // Reinicia o gráfico limpo!
+          }
 
-          // Refresh gráfico se já foi renderizado
+          // Matemática: Quanto subiu desdo o minuto zero?
+          let ganhoPercentual = bateriaAtualInt - startInfo.startBattery;
+          
+          // Matemática: Quanto tempo passou desde o minuto zero?
+          let passedMs = Date.now() - startInfo.tempoMs;
+          let passedSecs = Math.floor(passedMs / 1000);
+          let passedMins = Math.floor(passedSecs / 60);
+          let remainderSecs = passedSecs % 60;
+          
+          let strCronometro = passedMins > 0 ? `${passedMins}m ${remainderSecs}s` : `${remainderSecs}s`;
+
+          // Regista este ponto no gráfico
+          chargeLog.push({ tempoStr: strCronometro, ganho: ganhoPercentual });
+          
+          // Não deixa o gráfico "infinito" - Guarda apenas os últimos 12 pontos lidos para ter visão focada
+          if (chargeLog.length > 12) chargeLog.shift();
+          
+          localStorage.setItem('chargeLog', JSON.stringify(chargeLog));
+
+          // Atualiza instantaneamente a tela
           if(chart) {
-            chart.data.labels = bateriaLog.map(d => d.hora);
-            chart.data.datasets[0].data = bateriaLog.map(d => d.nivel);
+            chart.data.labels = chargeLog.map(d => d.tempoStr);
+            chart.data.datasets[0].data = chargeLog.map(d => d.ganho);
             chart.update();
           }
         }
       }
 
-      // Inicializa
+      // Renderiza assim que a página abre
       renderizarGrafico();
-      // A cada 3 segundos vai buscar a bateria enviada pelo ESP32 via Bluetooth (passada do AppInventor -> WebView)
-      setInterval(monitorarESP32bateria, 3000);
+      // Executa o "Inspetor de Bateria" a cada 3 segundos, puxando do ESP32
+      setInterval(calcularRelacaoCarga, 3000);
     </script>
   </body>
 </html>
