@@ -1,42 +1,42 @@
-# SafeCharge - Trotinete Docking App
+# SafeCharge - E-Scooter Docking System
 
-SafeCharge (também referida como a aplicação Dock) é uma solução Web/Mobile combinada para gerir e monitorizar contentores e docas de carregamento de trotinetes elétricas. Este projeto conjuga uma Interface Web otimizada e um controlador físico (Hardware baseado em ESP32) ligados de forma transparente através de **Microsoft App Inventor** via Bluetooth.
+SafeCharge is a hybrid Web/Mobile application designed to manage and monitor electric scooter charging docks. This project integrates a responsive web interface with a physical hardware controller (ESP32), bridged seamlessly via Bluetooth using a MIT App Inventor wrapper.
 
-## 🚀 Arquitetura do Sistema
+## System Architecture
 
-O sistema é comporto por três pilares principais:
+The project consists of three main components:
 
-1. **O Hardware (ESP32 Bluetooth):**
-   Um microcontrolador ESP32 alojado na placa dos cacifos. Lê a percentagem do nível de bateria e envia os dados contínuos. Fica à espera de comandos seriais ("CMD:UNLOCK" ou "CMD:LOCK") para atuar em relés de abertura/fecho mecânico. Encontra-se na pasta `/Hardware/ESP32_SafeCharge/`.
+1. **Hardware (ESP32 Bluetooth)**
+   A microcontroller embedded in the docking station. It reads the e-scooter's battery percentage and transmits this data continuously over Bluetooth. It also listens for specific serial commands ("CMD:UNLOCK" or "CMD:LOCK") to actuate the dock's mechanical locking relays. The source code is located in `/Hardware/ESP32_SafeCharge/`.
 
-2. **Ponte Mobile (MIT App Inventor):**
-   A aplicação nativa para Android reduzida apenas a 3 blocos lógicos. A sua única função é conectar-se ao Bluetooth (`ESP32_SafeCharge`), receber as métricas, e exibi-las invisivelmente dentro do ecrã de navegação principal configurado num componente `WebViewer`.
+2. **Mobile Wrapper (MIT App Inventor)**
+   A minimalist Android application acting solely as a Bluetooth-to-Web bridge. It connects to the ESP32 module, receives the hardware metrics, and injects them transparently into a full-screen `WebViewer` component.
 
-3. **Frontend da Aplicação (HTML/Tailwind/JS):**
-   A aplicação Web interativa desenvolvida usando HTML5 puro e Tailwind CSS. Uma vez que o fluxo corre no WebViewer, toda a lógica de negócio existe puramente nestes ficheiros:
-   - `login.html`: Gatekeeper que impede acesso sem a palavra-passe correta (Código base da dock/admin).
-   - `index.html`: Home dashboard que mostra bateria em tempo real e serve de painel central.
-   - `graficos.html`: Utiliza a biblioteca Chart.js para interpolar o tempo de carregamento da trotinete vs % ganha desde a hora conectada à doca.
-   - `controlador.html`: Controlos diretos à fechadura. Ao clicar em Botões como "Abrir Dock" emite comandos interceptados pelo App Inventor e despachados para o ESP32.
-   - `config.html`: Definições pessoais localizadas que suportam Dark Mode e Multilingue (Português / Inglês).
+3. **Frontend Application (HTML/Tailwind/JS)**
+   The core user interface runs entirely inside the WebViewer, handling all business logic and state management:
+   - `login.html`: Gatekeeper screen requiring an access code before exposing dock controls.
+   - `index.html`: Main dashboard displaying the real-time battery status.
+   - `graficos.html`: Utilizes Chart.js to plot battery charging progress over time.
+   - `controlador.html`: Interface to manually trigger hardware dock mechanisms (Lock/Unlock).
+   - `config.html`: User preferences, supporting persistent dark mode and language toggling.
 
-## 🛠 Instalação e Testes (Github Pages)
+## Deployment & Testing (GitHub Pages)
 
-Qualquer push para a branch `main` normaliza a atualização dos UI no GitHub Pages.
-Podes aceder à infraestrutura diretamente pelo URL mapeado do teu repositório (ex: `https://[username].github.io/dock/login.html`).
+The frontend is continuously deployed via GitHub Pages upon pushing to the `main` branch. The application can be accessed via the repository's GitHub Pages URL.
 
-Para testares a UI:
-1. Acede à zona de `login.html`.
-2. Códigos embutidos de testes rápidos: **`6767-6767`**.
+To test the UI bypass locally or via the web:
+1. Navigate to the `login.html` screen.
+2. Enter the hardcoded development testing code: `6767-6767`.
 
-## 🧱 Hardware (Como instalar no ESP32)
+## Hardware Setup
 
-1. Abre a pasta `/Hardware/ESP32_SafeCharge`.
-2. Garante que possuis a placa ESP32 instalada no Arduino IDE.
-3. Faz o upload do Sketch `ESP32_SafeCharge.ino`.
-4. Abre o **MIT App Inventor**, importa os blocos recomendados para ativar a leitura do Clock sobre o WebViewer.
+1. Navigate to the `/Hardware/ESP32_SafeCharge` directory.
+2. Open the `ESP32_SafeCharge.ino` sketch in the Arduino IDE.
+3. Ensure the ESP32 board and Bluetooth libraries are properly configured in your environment.
+4. Flash the code to the ESP32 microcontroller.
 
-## 🔧 Dependências
-* TailwindCSS (usado via CDN para styling responsivo e rápido)
-* Chart.js (para gerar análises gráficas do carregamento)
-* Vanilla JavaScript (para controlo DOM e Auth por SessionStorage)
+## Dependencies
+
+* **TailwindCSS**: Used via CDN for rapid, responsive styling.
+* **Chart.js**: Graphing library for charging analytics.
+* **Vanilla JavaScript**: State management and DOM interaction, utilizing `localStorage` for UI persistence.
