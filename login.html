@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dock - Login Bluetooth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
+    <section class="flex flex-col min-h-screen">
+      <main class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto">
+        <div class="bg-white rounded-2xl shadow-xl p-8 w-full border-t-8 border-[var(--comp-color)]">
+          <div class="flex justify-center mb-6">
+            <img src="./assets/logo.png" alt="Trotineta" class="w-20 h-20 object-contain" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iI0ZGOWI1MSIgLz48L3N2Zz4='"/>
+          </div>
+          <h1 class="text-2xl font-extrabold mb-2 text-center text-[var(--font-color)]">Conectar à Doc</h1>
+          <p class="text-sm text-center text-gray-500 mb-6 border-b pb-4">Por favor, introduza o código Bluetooth fornecido pela estação ou admin.</p>
+          
+          <form onsubmit="verificarCodigo(event)" class="space-y-5">
+            <div>
+              <label class="block text-sm font-semibold mb-1">Código de Acesso</label>
+              <input type="password" id="codigoAcesso" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[var(--comp-color)] focus:outline-none transition-colors text-center text-2xl tracking-widest" placeholder="****", required>
+            </div>
+
+            <button type="submit" class="w-full py-4 mt-4 bg-[var(--font-color)] text-[var(--bg-color)] font-bold rounded-lg uppercase tracking-wider hover:bg-[var(--comp-color)] transition-colors duration-300 shadow-md">
+              Desbloquear Sistema
+            </button>
+          </form>
+
+          <div id="erro-msg" class="hidden mt-4 text-center text-red-600 font-bold bg-red-100 p-3 rounded-lg text-sm">
+            Código Incorreto! Tente de novo.
+          </div>
+        </div>
+      </main>
+    </section>
+
+    <script>
+      function verificarCodigo(e) {
+        e.preventDefault();
+        const codigo = document.getElementById('codigoAcesso').value.trim();
+        const erroMsg = document.getElementById('erro-msg');
+        
+        // Aqui defines o código real que recebeste do Bluetooth ou do ESP32!
+        // Como estavas a usar "67" na simulação do App Inventor, mantive como a tua senha Mestre.
+        // Podes mudar para qualquer outra senha (ou ir ler direto à BD Supabase como na doc do C!)
+        if (codigo === "67") {
+          // Guardamos que o utilizador já está autenticado para não lhe pedir a senha outra vez se carregar em F5
+          sessionStorage.setItem("autenticado", "true");
+          // Redireciona para a página verde (Dashboard Home)
+          window.location.href = "index.html";
+        } else {
+          // Senha errada
+          erroMsg.classList.remove('hidden');
+          // Esconde ao fim de 3s
+          setTimeout(() => { erroMsg.classList.add('hidden'); }, 3000);
+        }
+      }
+
+      // Se já estava autenticado na sessão, vai logo direto sem pedir código
+      if(sessionStorage.getItem("autenticado") === "true") {
+        window.location.href = "index.html";
+      }
+    </script>
+  </body>
+</html>

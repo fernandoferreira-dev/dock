@@ -1,3 +1,7 @@
+#include "BluetoothSerial.h"
+
+BluetoothSerial SerialBT;
+
 // UART
 #define TXD2 21 
 #define RXD2 22 
@@ -10,6 +14,10 @@
 #define PIN_SYNC     25  
 #define PIN_BTN_RST  33  
 #define PIN_APP_RST  32  
+
+// Pinos para a Fechadura (Exemplo: Relés em dois pinos)
+// Apenas defina consoante a sua eletrónica
+#define PIN_LOCK_RELAY 15
 
 // Variáveis de bateria (0 a 100)
 int counter3 = 0, counter2 = 0, counter1 = 0, counter0 = 0;
@@ -34,6 +42,12 @@ void setup() {
   
   pinMode(PIN_APP_RST, OUTPUT);
   digitalWrite(PIN_APP_RST, LOW);
+
+  pinMode(PIN_LOCK_RELAY, OUTPUT);
+  digitalWrite(PIN_LOCK_RELAY, LOW); // Assumimos Fechado por defeito (LOW)
+
+  // Iniciar comunicação Bluetooth que a App Inventor vai procurar
+  SerialBT.begin("ESP32_SafeCharge");
 }
 
 void loop() {
@@ -94,13 +108,36 @@ void loop() {
     counter3 = 0; counter2 = 0; counter1 = 0; counter0 = 0;
   }
 
+  // *** LEITURA DE COMANDOS BLUETOOTH (DA PÁGINA WEB ATRAVÉS DO APP INVENTOR) ***
+  if (SerialBT.available()) {
+    String command = SerialBT.readStringUntil('\n'); // Ligar o buffer de série
+    command.trim();
+
+    if (command.startsWith("CMD:")) {
+      Serial.println("Comando Bluetooth Recebido: " + command);
+      
+      // Controla fisicamente a fechadura
+      if (command == "CMD:UNLOCK") {
+         digitalWrite(PIN_LOCK_RELAY, HIGH);
+         Serial.println("Fechadura ABERTA!");
+      } 
+      else if (command == "CMD:LOCK") {
+         digitalWrite(PIN_LOCK_RELAY, LOW);
+         Serial.println("Fechadura FECHADA!");
+      }
+    }
+  }
+
   if (millis() - lastReportTime >= 1000) {
     lastReportTime = millis();
     
-    Serial.printf("SPACES: %d,%d | %d,%d | %d,%d | %d,%d\n", 
-                  s3, counter3, 
-                  s2, counter2, 
-                  s1, counter1, 
-                  s0, counter0);
+    // FORMATO USADO NA APLICAÇÃO WEB
+    String output = "SPACES: " + String(s3) + "," + String(counter3) + " | " + 
+                    String(s2) + "," + String(counter2) + " | " + 
+                    String(s1) + "," + String(counter1) + " | " + 
+                    String(s0) + "," + String(counter0);
+    
+    Serial.println(output); 
+    SerialBT.println(output); // MANDAR PARA O TELEMÓVEL!!!!!
   }
 }

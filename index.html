@@ -31,6 +31,12 @@
     </section>
 
     <script>
+      // 🔒 VERIFICAÇÃO DE LOGIN BLUETOOTH
+      // Se não passou pelo ecrã de login e meteu a password, é chutado para lá!
+      if(sessionStorage.getItem("autenticado") !== "true") {
+        window.location.href = "login.html";
+      }
+
       // Guarda valores históricos de bateria para o gráfico localmente (opcionalmente pode vir do Supabase)
       if (!window.bateriaHistorico) window.bateriaHistorico = [];
 
