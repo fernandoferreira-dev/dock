@@ -20,7 +20,7 @@
           <form onsubmit="verificarCodigo(event)" class="space-y-5">
             <div>
               <label class="block text-sm font-semibold mb-1">Código de Acesso</label>
-              <input type="password" id="codigoAcesso" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[var(--comp-color)] focus:outline-none transition-colors text-center text-2xl tracking-widest" placeholder="****", required>
+              <input type="password" id="codigoAcesso" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[var(--comp-color)] focus:outline-none transition-colors text-center text-2xl tracking-widest" placeholder="xxxx-xxxx", required>
             </div>
 
             <button type="submit" class="w-full py-4 mt-4 bg-[var(--font-color)] text-[var(--bg-color)] font-bold rounded-lg uppercase tracking-wider hover:bg-[var(--comp-color)] transition-colors duration-300 shadow-md">
@@ -42,8 +42,8 @@
         const erroMsg = document.getElementById('erro-msg');
         
         // Aqui defines o código real que recebeste do Bluetooth ou do ESP32!
-        // Códigos hardcoded: "67" (teu original), "1234" (código de teste extra) ou "teste"
-        if (codigo === "67" || codigo === "1234" || codigo === "teste") {
+        // Código hardcoded para testes
+        if (codigo === "6767-6767") {
           // Guardamos que o utilizador já está autenticado para não lhe pedir a senha outra vez se carregar em F5
           sessionStorage.setItem("autenticado", "true");
           // Redireciona para a página verde (Dashboard Home)
