@@ -10,6 +10,9 @@
   </head>
   <body>
     <section class="flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
+      <div id="test-banner" class="hidden bg-yellow-400 text-yellow-900 text-[10px] font-black text-center py-1.5 w-full uppercase tracking-widest shadow-sm">
+        ⚠️ MODO DE TESTE ATIVO (CÓDIGO: 6767-6767) ⚠️
+      </div>
       <nav class="flex justify-between items-center p-6 w-full">
         <a href="notificacoes.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all flex items-center gap-2">
           Notificações
@@ -90,6 +93,11 @@
 
       // Guarda valores históricos de bateria para o gráfico localmente (opcionalmente pode vir do Supabase)
       if (!window.bateriaHistorico) window.bateriaHistorico = [];
+
+      // Verifica se está em modo de teste e exibe o banner superior
+      if (localStorage.getItem("codigoAcesso") === "6767-6767") {
+        document.getElementById('test-banner').classList.remove('hidden');
+      }
 
       let ultimaAtualizacaoBluetooth = 0;
 
