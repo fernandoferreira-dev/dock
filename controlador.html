@@ -18,21 +18,39 @@
       <main class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto gap-8">
         <h1 class="text-2xl font-extrabold mb-2 text-center text-[var(--font-color)]">Controlo Físico</h1>
         
-        <button onclick="enviarComando('UNLOCK')" class="w-full py-8 text-2xl font-black tracking-wider rounded-2xl bg-green-500 text-white shadow-lg border-b-[6px] border-green-700 active:border-b-0 active:translate-y-[6px] hover:bg-green-400 hover:border-green-600 transition-all flex flex-col items-center justify-center group overflow-hidden relative">
-          <div class="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
-          </svg>
-          ABRIR DOCK
-        </button>
+        <div class="w-full relative touch-none select-none">
+          <button id="btn-unlock" 
+            onmousedown="iniciarDesbloqueio()" onmouseup="cancelarDesbloqueio()" onmouseleave="cancelarDesbloqueio()"
+            ontouchstart="iniciarDesbloqueio()" ontouchend="cancelarDesbloqueio()"
+            class="w-full py-8 text-2xl font-black tracking-wider rounded-2xl bg-gray-200 text-gray-500 shadow-inner transition-all flex flex-col items-center justify-center relative overflow-hidden group">
+            
+            <div id="unlock-progress" class="absolute left-0 top-0 bottom-0 bg-green-500 w-0 transition-all ease-linear" style="transition-duration: 0.3s;"></div>
+            
+            <div class="relative z-10 flex flex-col items-center text-gray-600 transition-colors drop-shadow-md" id="unlock-content">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+              </svg>
+              SEGURA PARA ABRIR DOCK
+            </div>
+          </button>
+        </div>
 
-        <button onclick="enviarComando('LOCK')" class="w-full py-8 text-2xl font-black tracking-wider rounded-2xl bg-red-500 text-white shadow-lg border-b-[6px] border-red-700 active:border-b-0 active:translate-y-[6px] hover:bg-red-400 hover:border-red-600 transition-all flex flex-col items-center justify-center group overflow-hidden relative">
-           <div class="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          FECHAR DOCK
-        </button>
+        <div class="w-full relative touch-none select-none mt-2">
+          <button id="btn-lock" 
+            onmousedown="iniciarBloqueio()" onmouseup="cancelarBloqueio()" onmouseleave="cancelarBloqueio()"
+            ontouchstart="iniciarBloqueio()" ontouchend="cancelarBloqueio()"
+            class="w-full py-8 text-2xl font-black tracking-wider rounded-2xl bg-gray-200 text-gray-500 shadow-inner transition-all flex flex-col items-center justify-center relative overflow-hidden group">
+            
+            <div id="lock-progress" class="absolute left-0 right-0 top-0 bottom-0 bg-red-500 w-0 transition-all ease-linear ml-auto" style="transition-duration: 0.3s; width: 0%;"></div>
+            
+            <div class="relative z-10 flex flex-col items-center text-gray-600 transition-colors drop-shadow-md" id="lock-content">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3 drop-shadow-md" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              SEGURA PARA FECHAR DOCK
+            </div>
+          </button>
+        </div>
 
         <div id="status-msg" class="h-10 mt-4 px-6 py-2 rounded-full opacity-0 scale-95 transition-all duration-300 font-extrabold text-lg text-center flex items-center justify-center tracking-widest shadow-md">
           <!-- Text dynamically loaded here -->
@@ -51,6 +69,71 @@
       if(localStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html";
       }
+
+      // --- LOGICA DE SEGURAR PARA DESBLOQUEAR ---
+      let unlockTimer;
+      function iniciarDesbloqueio() {
+        const progresso = document.getElementById('unlock-progress');
+        const content = document.getElementById('unlock-content');
+        
+        progresso.style.transitionDuration = '1.5s';
+        progresso.style.width = '100%';
+        content.classList.add('text-white');
+        content.classList.remove('text-gray-600');
+
+        unlockTimer = setTimeout(() => {
+          enviarComando('UNLOCK');
+          progresso.style.transitionDuration = '0.2s';
+          progresso.style.width = '0%';
+          content.classList.remove('text-white');
+          content.classList.add('text-gray-600');
+          if (navigator.vibrate) navigator.vibrate(200);
+        }, 1500);
+      }
+
+      function cancelarDesbloqueio() {
+        clearTimeout(unlockTimer);
+        const progresso = document.getElementById('unlock-progress');
+        const content = document.getElementById('unlock-content');
+        
+        progresso.style.transitionDuration = '0.3s';
+        progresso.style.width = '0%';
+        content.classList.remove('text-white');
+        content.classList.add('text-gray-600');
+      }
+
+      // --- LOGICA DE SEGURAR PARA BLOQUEAR (fecha) ---
+      let lockTimer;
+      function iniciarBloqueio() {
+        const progresso = document.getElementById('lock-progress');
+        const content = document.getElementById('lock-content');
+        
+        progresso.style.transitionDuration = '1.5s';
+        progresso.style.width = '100%';
+        content.classList.add('text-white');
+        content.classList.remove('text-gray-600');
+
+        lockTimer = setTimeout(() => {
+          enviarComando('LOCK');
+          progresso.style.transitionDuration = '0.2s';
+          progresso.style.width = '0%';
+          content.classList.remove('text-white');
+          content.classList.add('text-gray-600');
+          if (navigator.vibrate) navigator.vibrate(200);
+        }, 1500);
+      }
+
+      function cancelarBloqueio() {
+        clearTimeout(lockTimer);
+        const progresso = document.getElementById('lock-progress');
+        const content = document.getElementById('lock-content');
+        
+        progresso.style.transitionDuration = '0.3s';
+        progresso.style.width = '0%';
+        content.classList.remove('text-white');
+        content.classList.add('text-gray-600');
+      }
+
 
       function enviarComando(acao) {
         const msg = document.getElementById('status-msg');

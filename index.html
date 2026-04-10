@@ -11,22 +11,28 @@
   <body>
     <section class="flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
       <nav class="flex justify-between items-center p-6">
-        <a href="notificacoes.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all flex items-center gap-2">
-          Notificações
-          <span id="badge-notificacao" class="hidden flex h-3 w-3 relative">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-          </span>
-        </a>
-        <a href="config.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all">Configurações</a>
+        <div id="bt-status" class="flex items-center gap-2 text-xs font-bold text-red-600 bg-red-100 px-3 py-1.5 rounded-full transition-colors shadow-sm">
+          <span id="bt-dot" class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+          <span id="bt-text">A aguardar Doca...</span>
+        </div>
+        <div class="flex gap-2">
+          <a href="notificacoes.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all flex items-center gap-2">
+            <span id="badge-notificacao" class="hidden flex h-3 w-3 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+            </span>
+          </a>
+          <a href="config.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all">Configurações</a>
+        </div>
       </nav>
       
       <main class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto">
         <div class="relative w-64 h-64 rounded-full bg-white shadow-2xl flex flex-col items-center justify-center border-8 border-[var(--comp-color)] mb-8 flex-shrink-0 group hover:scale-105 transition-transform duration-500">
           <div class="absolute inset-0 rounded-full border-[12px] border-[var(--comp-color)] opacity-20 animate-ping"></div>
           <img src="./assets/logo.png" alt="Trotineta" class="w-24 h-24 object-contain mb-4 z-10 drop-shadow-md" />
-          <p class="text-5xl font-black text-[var(--font-color)] z-10 tracking-tight">
-            <span id="bateria">100%</span>
+          <p class="text-5xl font-black text-[var(--font-color)] z-10 tracking-tight flex flex-col items-center">
+            <span id="bateria">--%</span>
+            <span id="tempo-restante" class="text-sm font-bold text-gray-400 mt-2 tracking-normal opacity-0 transition-opacity">A calcular...</span>
           </p>
         </div>
 
@@ -90,6 +96,51 @@
       // Guarda valores históricos de bateria para o gráfico localmente (opcionalmente pode vir do Supabase)
       if (!window.bateriaHistorico) window.bateriaHistorico = [];
 
+      let ultimaAtualizacaoBluetooth = 0;
+
+      function updateConnectionStatus(isOnline) {
+        const statusDiv = document.getElementById('bt-status');
+        const dot = document.getElementById('bt-dot');
+        const txt = document.getElementById('bt-text');
+        
+        if (isOnline) {
+          statusDiv.className = "flex items-center gap-2 text-xs font-bold text-green-700 bg-green-100 px-3 py-1.5 rounded-full transition-colors shadow-sm";
+          dot.className = "w-2 h-2 rounded-full bg-green-600";
+          txt.innerText = "Conectado";
+        } else {
+          statusDiv.className = "flex items-center gap-2 text-xs font-bold text-red-600 bg-red-100 px-3 py-1.5 rounded-full transition-colors shadow-sm";
+          dot.className = "w-2 h-2 rounded-full bg-red-600 animate-pulse";
+          txt.innerText = "A procurar doca...";
+          document.getElementById('tempo-restante').classList.add('opacity-0');
+        }
+      }
+
+      function atualizarTempoRestante(percentagem) {
+        const p = parseInt(percentagem);
+        const trNode = document.getElementById('tempo-restante');
+        trNode.classList.remove('opacity-0');
+        
+        if (isNaN(p)) return;
+        if (p >= 100) {
+          trNode.innerText = "Completamente carregado";
+          trNode.className = "text-sm font-bold text-green-500 mt-2 tracking-normal transition-opacity";
+          return;
+        }
+
+        // Estimativa simples: 1% recarrega em 1.5 minutos (0 a 100 em 2.5h).
+        const faltamPerc = 100 - p;
+        const minRestantes = Math.floor(faltamPerc * 1.5);
+        
+        trNode.className = "text-sm font-bold text-gray-500 mt-2 tracking-normal transition-opacity";
+        if (minRestantes > 60) {
+          const horas = Math.floor(minRestantes / 60);
+          const minutos = minRestantes % 60;
+          trNode.innerText = `~${horas}h ${minutos}m restantes`;
+        } else {
+          trNode.innerText = `~${minRestantes}m restantes`;
+        }
+      }
+
       // Automatically receive data from App Inventor's WebViewString
       function checkAppInventorData() {
         if (window.AppInventor) {
@@ -99,6 +150,9 @@
             if (bateriaElement) {
               // Verifica se vem do ESP32 no formato "SPACES: s,b | s,b | s,b | s,b"
               if (webString.includes("SPACES:")) {
+                ultimaAtualizacaoBluetooth = Date.now();
+                updateConnectionStatus(true);
+                
                 // Remove prefixo e divide pelos slots
                 const slotsStr = webString.replace("SPACES:", "").trim().split("|");
                 // Vamos supor que a trotinete deste cliente é o Slot 1 (s0 no código do esp) ou procure o primeiro slot ocupado com bateria > 0
@@ -112,12 +166,16 @@
                   }
                 }
                 bateriaElement.innerText = bateriaEncontrada;
+                atualizarTempoRestante(bateriaEncontrada);
                 localStorage.setItem('bateriaAtual', bateriaEncontrada.replace('%', ''));
               } else {
+                ultimaAtualizacaoBluetooth = Date.now();
+                updateConnectionStatus(true);
                 // Caso o AppInventor retorne apenas um número diretamente
                 bateriaElement.innerText = webString.includes("%") ? webString : webString + "%";
                 localStorage.setItem('bateriaAtual', webString.replace('%', ''));
                 gerarNotificacaoLimites(webString.replace('%', ''));
+                atualizarTempoRestante(webString.replace('%', ''));
               }
             }
           }
@@ -131,6 +189,13 @@
         setInterval(checkAppInventorData, 1000);
         // Verifica se há novas notificações para piscar a luzinha
         setInterval(checkNotificacoesBadge, 2000);
+        
+        // Verifica a cada 2segundos se passou muito tempo sem ouvir do hardware (ex:3.5s) para marcar offline
+        setInterval(() => {
+          if(Date.now() - ultimaAtualizacaoBluetooth > 3500) {
+            updateConnectionStatus(false);
+          }
+        }, 2000);
       };
 
       let jaNotificou = false; // flag em memória para não spammar
