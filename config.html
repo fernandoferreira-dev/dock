@@ -27,7 +27,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 w-full text-center">
           <h2 class="text-lg font-bold text-gray-800 mb-3" id="theme-title">Aparência</h2>
           <button onclick="toggleTheme()" class="w-full py-3 bg-[var(--font-color)] text-[var(--bg-color)] font-bold rounded-lg transition-colors border border-transparent hover:border-[var(--comp-color)]" id="btn-theme">
-            Alternar Modo Noturno 🌙
+            Alternar Modo Noturno
           </button>
         </div>
 
@@ -35,7 +35,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 w-full text-center">
           <h2 class="text-lg font-bold text-gray-800 mb-3" id="lang-title">Idioma / Language</h2>
           <button onclick="toggleLanguage()" class="w-full py-3 bg-[var(--comp-color)] text-white font-bold rounded-lg transition-colors hover:opacity-80" id="btn-lang">
-            Mudar para English 🇬🇧
+            Mudar para English
           </button>
         </div>
 
@@ -44,7 +44,7 @@
           <h2 class="text-lg font-bold text-gray-800 mb-3 text-center" id="support-title">Falar com o Administrador</h2>
           <textarea id="feedback_msg" rows="4" class="w-full p-3 rounded-lg border-2 border-gray-200 text-gray-800 focus:border-[var(--comp-color)] focus:outline-none transition-colors resize-none mb-3" placeholder="A sua mensagem para o suporte..."></textarea>
           <button onclick="enviarEmail()" class="w-full py-3 font-semibold text-sm rounded-lg bg-gray-200 text-gray-800 shadow-sm hover:bg-gray-300 transition-all font-bold" id="btn-send">
-            Enviar Email ✉️
+            Enviar Email
           </button>
         </div>
 
@@ -67,7 +67,7 @@
     </section>
 
     <script>
-      // 🔒 VERIFICAÇÃO DE LOGIN BLUETOOTH
+      //  VERIFICAÇÃO DE LOGIN BLUETOOTH
       if(sessionStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html";
       }
@@ -91,13 +91,13 @@
           btnBack: "&larr; Voltar",
           title: "Refina as Definições",
           themeTitle: "Aparência",
-          btnThemeDark: "Alternar Modo Noturno 🌙",
-          btnThemeLight: "Alternar Modo Claro ☀️",
+          btnThemeDark: "Alternar Modo Noturno",
+          btnThemeLight: "Alternar Modo Claro",
           langTitle: "Idioma / Language",
-          btnLang: "Switch to English 🇬🇧",
+          btnLang: "Switch to English",
           suppTitle: "Falar com o Administrador",
           textMsgHide: "A sua mensagem para o suporte...",
-          btnSend: "Enviar Email ✉️",
+          btnSend: "Enviar Email",
           navGraphs: "Gráficos",
           navCtrl: "Controlador",
           alertEmpty: "Por favor, escreva uma mensagem antes de enviar."
@@ -106,13 +106,13 @@
           btnBack: "&larr; Back",
           title: "Setup Preferences",
           themeTitle: "Appearance",
-          btnThemeDark: "Switch to Dark Mode 🌙",
-          btnThemeLight: "Switch to Light Mode ☀️",
+          btnThemeDark: "Switch to Dark Mode",
+          btnThemeLight: "Switch to Light Mode",
           langTitle: "Idioma / Language",
-          btnLang: "Mudar para Português 🇵🇹",
+          btnLang: "Mudar para Português",
           suppTitle: "Contact Administrator",
           textMsgHide: "Type your message to support...",
-          btnSend: "Send Mail ✉️",
+          btnSend: "Send Mail",
           navGraphs: "Charts",
           navCtrl: "Controller",
           alertEmpty: "Please type a message before sending."

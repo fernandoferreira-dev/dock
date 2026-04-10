@@ -1,73 +1,42 @@
-# React + TypeScript + Vite
+# SafeCharge - Trotinete Docking App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SafeCharge (também referida como a aplicação Dock) é uma solução Web/Mobile combinada para gerir e monitorizar contentores e docas de carregamento de trotinetes elétricas. Este projeto conjuga uma Interface Web otimizada e um controlador físico (Hardware baseado em ESP32) ligados de forma transparente através de **Microsoft App Inventor** via Bluetooth.
 
-Currently, two official plugins are available:
+## 🚀 Arquitetura do Sistema
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+O sistema é comporto por três pilares principais:
 
-## React Compiler
+1. **O Hardware (ESP32 Bluetooth):**
+   Um microcontrolador ESP32 alojado na placa dos cacifos. Lê a percentagem do nível de bateria e envia os dados contínuos. Fica à espera de comandos seriais ("CMD:UNLOCK" ou "CMD:LOCK") para atuar em relés de abertura/fecho mecânico. Encontra-se na pasta `/Hardware/ESP32_SafeCharge/`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. **Ponte Mobile (MIT App Inventor):**
+   A aplicação nativa para Android reduzida apenas a 3 blocos lógicos. A sua única função é conectar-se ao Bluetooth (`ESP32_SafeCharge`), receber as métricas, e exibi-las invisivelmente dentro do ecrã de navegação principal configurado num componente `WebViewer`.
 
-## Expanding the ESLint configuration
+3. **Frontend da Aplicação (HTML/Tailwind/JS):**
+   A aplicação Web interativa desenvolvida usando HTML5 puro e Tailwind CSS. Uma vez que o fluxo corre no WebViewer, toda a lógica de negócio existe puramente nestes ficheiros:
+   - `login.html`: Gatekeeper que impede acesso sem a palavra-passe correta (Código base da dock/admin).
+   - `index.html`: Home dashboard que mostra bateria em tempo real e serve de painel central.
+   - `graficos.html`: Utiliza a biblioteca Chart.js para interpolar o tempo de carregamento da trotinete vs % ganha desde a hora conectada à doca.
+   - `controlador.html`: Controlos diretos à fechadura. Ao clicar em Botões como "Abrir Dock" emite comandos interceptados pelo App Inventor e despachados para o ESP32.
+   - `config.html`: Definições pessoais localizadas que suportam Dark Mode e Multilingue (Português / Inglês).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠 Instalação e Testes (Github Pages)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Qualquer push para a branch `main` normaliza a atualização dos UI no GitHub Pages.
+Podes aceder à infraestrutura diretamente pelo URL mapeado do teu repositório (ex: `https://[username].github.io/dock/login.html`).
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Para testares a UI:
+1. Acede à zona de `login.html`.
+2. Códigos embutidos de testes rápidos: **`6767-6767`**.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🧱 Hardware (Como instalar no ESP32)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. Abre a pasta `/Hardware/ESP32_SafeCharge`.
+2. Garante que possuis a placa ESP32 instalada no Arduino IDE.
+3. Faz o upload do Sketch `ESP32_SafeCharge.ino`.
+4. Abre o **MIT App Inventor**, importa os blocos recomendados para ativar a leitura do Clock sobre o WebViewer.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🔧 Dependências
+* TailwindCSS (usado via CDN para styling responsivo e rápido)
+* Chart.js (para gerar análises gráficas do carregamento)
+* Vanilla JavaScript (para controlo DOM e Auth por SessionStorage)

@@ -18,12 +18,12 @@
         <h1 class="text-2xl font-extrabold mb-2 text-center text-[var(--font-color)]">Controlo Físico</h1>
         
         <button onclick="enviarComando('UNLOCK')" class="w-full py-8 text-2xl font-black tracking-wider rounded-2xl bg-green-500 text-white shadow-lg border-b-[6px] border-green-700 active:border-b-0 active:translate-y-[6px] transition-all flex flex-col items-center justify-center">
-          <span class="text-4xl mb-2">🔓</span>
+          <span class="text-4xl mb-2"></span>
           ABRIR DOCK
         </button>
 
         <button onclick="enviarComando('LOCK')" class="w-full py-8 text-2xl font-black tracking-wider rounded-2xl bg-red-500 text-white shadow-lg border-b-[6px] border-red-700 active:border-b-0 active:translate-y-[6px] transition-all flex flex-col items-center justify-center">
-          <span class="text-4xl mb-2">🔒</span>
+          <span class="text-4xl mb-2"></span>
           FECHAR DOCK
         </button>
 
@@ -40,7 +40,7 @@
     </section>
 
     <script>
-      // 🔒 VERIFICAÇÃO DE LOGIN BLUETOOTH
+      //  VERIFICAÇÃO DE LOGIN BLUETOOTH
       if(sessionStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html";
       }
