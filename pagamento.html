@@ -83,6 +83,10 @@
           const SUPABASE_URL = "https://cvzhdxfomjxawjwxjmnh.supabase.co";
           const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2emhkeGZvbWp4YXdqd3hqbW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjc0MzgsImV4cCI6MjA4ODk0MzQzOH0.t6cljClgMgGiCiInch1aYUaR-4v7d35HUYp2yh9mdyU";
           
+          // Define e guarda o limite para as notificações
+          let limite = valorInteiro === 1 ? 30 : 100;
+          localStorage.setItem('limiteCarregamento', limite.toString());
+
           fetch(`${SUPABASE_URL}/rest/v1/pagamentos`, {
             method: 'POST',
             headers: {

@@ -11,7 +11,13 @@
   <body>
     <section class="flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
       <nav class="flex justify-between items-center p-6">
-        <button class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all">Notificações</button>
+        <a href="notificacoes.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all flex items-center gap-2">
+          Notificações
+          <span id="badge-notificacao" class="hidden flex h-3 w-3 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+          </span>
+        </a>
         <a href="config.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all">Configurações</a>
       </nav>
       
@@ -55,13 +61,21 @@
           // Envia o comando de parar pelo AppInventor se necessário
           if (window.AppInventor) {
             window.AppInventor.setWebViewString("CMD:END_CHARGE");
+            setTimeout(() => {
+              window.AppInventor.setWebViewString("CMD:DISCONNECT");
+            }, 500);
           }
           
-          msg.innerText = "Carregamento terminado!";
+          msg.innerText = "Carregamento terminado, a desconectar...";
           msg.className = "mt-4 text-center text-sm font-bold bg-green-100 text-green-700 p-3 rounded-lg w-full max-w-[250px] transition-all";
           
           // Opcional: fechar a sessão ou resetar estado
-          // localStorage.removeItem('cacifoAberto');
+          localStorage.removeItem('cacifoAberto');
+          localStorage.removeItem('autenticado');
+          
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 2500);
         } else {
           msg.innerText = "Abra o cacifo no Controlador primeiro!";
           msg.className = "mt-4 text-center text-sm font-bold bg-red-100 text-red-600 p-3 rounded-lg w-full max-w-[250px] transition-all";
@@ -93,6 +107,7 @@
                   const s = slotsStr[i].trim().split(",");
                   if (s[0] === "1") { // Se estiver ocupado, s == 1
                     bateriaEncontrada = s[1].trim() + "%";
+                    gerarNotificacaoLimites(s[1].trim());
                     break;
                   }
                 }
@@ -102,6 +117,7 @@
                 // Caso o AppInventor retorne apenas um número diretamente
                 bateriaElement.innerText = webString.includes("%") ? webString : webString + "%";
                 localStorage.setItem('bateriaAtual', webString.replace('%', ''));
+                gerarNotificacaoLimites(webString.replace('%', ''));
               }
             }
           }
@@ -113,7 +129,53 @@
         checkAppInventorData();
         // Constantly poll for updates so it updates automatically when the string changes
         setInterval(checkAppInventorData, 1000);
+        // Verifica se há novas notificações para piscar a luzinha
+        setInterval(checkNotificacoesBadge, 2000);
       };
+
+      let jaNotificou = false; // flag em memória para não spammar
+
+      function gerarNotificacaoLimites(bateriaValue) {
+        // Exemplo: se pagou 1€, o limite é 30% (guardado no localStorage quando fez o bypass ou real)
+        const limiteCarregamento = parseInt(localStorage.getItem('limiteCarregamento')) || 100;
+        const b = parseInt(bateriaValue);
+
+        if (!jaNotificou && b >= limiteCarregamento) {
+          jaNotificou = true;
+          
+          let novaMensagem = "Sua trotinete atingiu o limite de carregamento (" + b + "%).";
+          
+          let notificacoes = JSON.parse(localStorage.getItem('notificacoes') || '[]');
+          notificacoes.unshift(novaMensagem); // põe no começo
+          localStorage.setItem('notificacoes', JSON.stringify(notificacoes));
+          
+          // Conta as não lidas
+          let naoLidadas = parseInt(localStorage.getItem('notificacoes_nao_lidas') || '0');
+          localStorage.setItem('notificacoes_nao_lidas', (naoLidadas + 1).toString());
+          
+          // Pode ativar uma buzina no App Inventor, enviar Toast notification etc.
+          if (window.AppInventor) {
+             window.AppInventor.setWebViewString("CMD:NOTIFY_LIMIT_REACHED");
+          } else {
+             // Notificação do navegador (se suportado/aceite) ou apenas alert native
+             if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("Terminado!", {body: novaMensagem});
+             } else {
+                alert("Nova Notificação: " + novaMensagem);
+             }
+          }
+        }
+      }
+
+      function checkNotificacoesBadge() {
+         const badge = document.getElementById('badge-notificacao');
+         let naoLidas = parseInt(localStorage.getItem('notificacoes_nao_lidas') || '0');
+         if (naoLidas > 0) {
+            badge.classList.remove('hidden');
+         } else {
+            badge.classList.add('hidden');
+         }
+      }
     </script>
   </body>
 </html>

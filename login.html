@@ -57,6 +57,9 @@
         if (codigo === "6767-6767") {
           // Guardamos que o utilizador já está autenticado para não lhe pedir a senha outra vez se carregar em F5
           localStorage.setItem("autenticado", "true");
+          // Guardamos o código também
+          localStorage.setItem("codigoAcesso", codigo);
+          
           // Redireciona para a página verde (Dashboard Home) TODO: repor para pagamento.html em prod
           window.location.href = "index.html"; 
         } else {

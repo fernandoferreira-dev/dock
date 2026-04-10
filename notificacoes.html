@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dock - Notificações</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./styles.css" />
+    <script>
+      if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    </script>
+  </head>
+  <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans transition-colors duration-300">
+    <section class="flex flex-col min-h-screen">
+      <nav class="flex justify-start items-center p-6">
+        <a href="index.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white text-gray-800 shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all">
+          &larr; Voltar
+        </a>
+      </nav>
+      
+      <main class="flex-1 flex flex-col items-center justify-start px-6 pb-6 w-full max-w-md mx-auto gap-4">
+        <h1 class="text-2xl font-extrabold mb-2 text-center text-[var(--font-color)]">Notificações</h1>
+        
+        <div id="lista-notificacoes" class="w-full flex flex-col gap-3">
+          <!-- As notificações serão inseridas aqui via JS -->
+        </div>
+
+        <button onclick="limparNotificacoes()" class="mt-4 px-6 py-3 bg-red-100 text-red-600 font-bold rounded-lg w-full max-w-[200px] mx-auto hover:bg-red-200 transition-all font-semibold hidden" id="btn-limpar">
+          Limpar Tudo
+        </button>
+        
+        <div id="empty-state" class="text-gray-500 text-center mt-10">
+          Nenhuma notificação por enquanto...
+        </div>
+      </main>
+
+      <footer class="flex w-full mt-auto bg-[var(--font-color)] text-[var(--bg-color)] cursor-pointer">
+        <a href="graficos.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300">Gráficos</a>
+        <a href="index.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Home</a>
+        <a href="controlador.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Controlador</a>
+      </footer>
+    </section>
+
+    <script>
+      function renderizarNotificacoes() {
+        const list = document.getElementById('lista-notificacoes');
+        const emptyState = document.getElementById('empty-state');
+        const btnLimpar = document.getElementById('btn-limpar');
+        
+        // Puxa notificações do localStorage
+        let notificacoes = JSON.parse(localStorage.getItem('notificacoes') || '[]');
+        
+        list.innerHTML = "";
+        
+        if (notificacoes.length > 0) {
+          emptyState.classList.add('hidden');
+          btnLimpar.classList.remove('hidden');
+          
+          // Renderiza da mais recente para a mais antiga
+          notificacoes.forEach((msg) => {
+            const card = document.createElement('div');
+            card.className = "bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border-l-4 border-[var(--comp-color)] text-sm font-semibold flex items-center";
+            card.innerText = msg;
+            list.appendChild(card);
+          });
+        } else {
+          emptyState.classList.remove('hidden');
+          btnLimpar.classList.add('hidden');
+        }
+      }
+
+      function limparNotificacoes() {
+        localStorage.removeItem('notificacoes');
+        localStorage.removeItem('notificacoes_nao_lidas');
+        renderizarNotificacoes();
+      }
+
+      window.onload = () => {
+        // Marca como lidas ao entrar
+        localStorage.setItem('notificacoes_nao_lidas', '0');
+        renderizarNotificacoes();
+      }
+    </script>
+  </body>
+</html>
