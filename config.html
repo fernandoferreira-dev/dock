@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dock - Configurações</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./styles.css" />
+    <!-- Definir cor do App Inventor WebView -->
+    <script>
+      if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      let lang = localStorage.getItem('lang') || 'pt';
+    </script>
+  </head>
+  <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans transition-colors duration-300">
+    <section class="flex flex-col min-h-screen">
+      <nav class="flex justify-start items-center p-6">
+        <a href="index.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white text-gray-800 shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all" id="btn-back">
+          &larr; Voltar
+        </a>
+      </nav>
+      
+      <main class="flex-1 flex flex-col items-center justify-start p-6 w-full max-w-md mx-auto gap-6">
+        <h1 class="text-2xl font-extrabold mb-4 text-center text-[var(--font-color)]" id="title">Refina as Definições</h1>
+        
+        <!-- Bloco 1: Tema (Modo Escuro / Claro) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 w-full text-center">
+          <h2 class="text-lg font-bold text-gray-800 mb-3" id="theme-title">Aparência</h2>
+          <button onclick="toggleTheme()" class="w-full py-3 bg-[var(--font-color)] text-[var(--bg-color)] font-bold rounded-lg transition-colors border border-transparent hover:border-[var(--comp-color)]" id="btn-theme">
+            Alternar Modo Noturno 🌙
+          </button>
+        </div>
+
+        <!-- Bloco 2: Idioma (Português / Inglês) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 w-full text-center">
+          <h2 class="text-lg font-bold text-gray-800 mb-3" id="lang-title">Idioma / Language</h2>
+          <button onclick="toggleLanguage()" class="w-full py-3 bg-[var(--comp-color)] text-white font-bold rounded-lg transition-colors hover:opacity-80" id="btn-lang">
+            Mudar para English 🇬🇧
+          </button>
+        </div>
+
+        <!-- Bloco 3: Suporte (Enviar email ao Administrador) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 w-full">
+          <h2 class="text-lg font-bold text-gray-800 mb-3 text-center" id="support-title">Falar com o Administrador</h2>
+          <textarea id="feedback_msg" rows="4" class="w-full p-3 rounded-lg border-2 border-gray-200 text-gray-800 focus:border-[var(--comp-color)] focus:outline-none transition-colors resize-none mb-3" placeholder="A sua mensagem para o suporte..."></textarea>
+          <button onclick="enviarEmail()" class="w-full py-3 font-semibold text-sm rounded-lg bg-gray-200 text-gray-800 shadow-sm hover:bg-gray-300 transition-all font-bold" id="btn-send">
+            Enviar Email ✉️
+          </button>
+        </div>
+      </main>
+
+      <footer class="flex w-full mt-auto bg-[var(--font-color)] text-[var(--bg-color)] cursor-pointer">
+        <a href="graficos.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300" id="nav-graphs">Gráficos</a>
+        <a href="index.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20" id="nav-home">Home</a>
+        <a href="controlador.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20" id="nav-ctrl">Controlador</a>
+      </footer>
+    </section>
+
+    <script>
+      // 1. TEMA (Claro/Escuro)
+      function toggleTheme() {
+        const doc = document.documentElement;
+        const currentTheme = doc.getAttribute('data-theme');
+        let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        doc.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Atualiza a UI deste botão especificamente de acordo com o idioma!
+        updateTexts();
+      }
+
+      // 2. IDIOMAS (Textos estáticos para PT e EN)
+      const dicionario = {
+        pt: {
+          btnBack: "&larr; Voltar",
+          title: "Refina as Definições",
+          themeTitle: "Aparência",
+          btnThemeDark: "Alternar Modo Noturno 🌙",
+          btnThemeLight: "Alternar Modo Claro ☀️",
+          langTitle: "Idioma / Language",
+          btnLang: "Switch to English 🇬🇧",
+          suppTitle: "Falar com o Administrador",
+          textMsgHide: "A sua mensagem para o suporte...",
+          btnSend: "Enviar Email ✉️",
+          navGraphs: "Gráficos",
+          navCtrl: "Controlador",
+          alertEmpty: "Por favor, escreva uma mensagem antes de enviar."
+        },
+        en: {
+          btnBack: "&larr; Back",
+          title: "Setup Preferences",
+          themeTitle: "Appearance",
+          btnThemeDark: "Switch to Dark Mode 🌙",
+          btnThemeLight: "Switch to Light Mode ☀️",
+          langTitle: "Idioma / Language",
+          btnLang: "Mudar para Português 🇵🇹",
+          suppTitle: "Contact Administrator",
+          textMsgHide: "Type your message to support...",
+          btnSend: "Send Mail ✉️",
+          navGraphs: "Charts",
+          navCtrl: "Controller",
+          alertEmpty: "Please type a message before sending."
+        }
+      };
+
+      function updateTexts() {
+        const txt = dicionario[lang];
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+        document.getElementById('btn-back').innerHTML = txt.btnBack;
+        document.getElementById('title').innerText = txt.title;
+        document.getElementById('theme-title').innerText = txt.themeTitle;
+        document.getElementById('btn-theme').innerText = isDark ? txt.btnThemeLight : txt.btnThemeDark;
+        document.getElementById('lang-title').innerText = txt.langTitle;
+        document.getElementById('btn-lang').innerText = txt.btnLang;
+        document.getElementById('support-title').innerText = txt.suppTitle;
+        document.getElementById('feedback_msg').placeholder = txt.textMsgHide;
+        document.getElementById('btn-send').innerText = txt.btnSend;
+        document.getElementById('nav-graphs').innerText = txt.navGraphs;
+        document.getElementById('nav-ctrl').innerText = txt.navCtrl;
+      }
+
+      function toggleLanguage() {
+        lang = lang === 'pt' ? 'en' : 'pt';
+        localStorage.setItem('lang', lang);
+        updateTexts();
+      }
+
+      // Aplica logo ao iniciar
+      updateTexts();
+
+      // 3. ENVIAR EMAIL (Usando app externa do Tlmvl/PC default com mailto:)
+      function enviarEmail() {
+        const msgUsuario = document.getElementById('feedback_msg').value.trim();
+        
+        if (!msgUsuario) {
+          alert(dicionario[lang].alertEmpty);
+          return;
+        }
+
+        // ALTERA ISTO PARA O TEU EMAIL OFICIAL
+        const emailAdministrador = "admin@safecharge.com"; 
+        
+        const subject = encodeURIComponent("App SafeCharge: Mensagem de Suporte / Dúvida");
+        const body = encodeURIComponent("Mensagem do Utilizador:\n\n" + msgUsuario);
+        
+        // O "mailto:" força todas as apps como o (Google Gmail do telemóvel, Outlook, etc.) a abrir sozinhas!
+        window.location.href = `mailto:${emailAdministrador}?subject=${subject}&body=${body}`;
+      }
+    </script>
+  </body>
+</html>

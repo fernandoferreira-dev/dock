@@ -4,6 +4,12 @@
   --comp-color: #FF9B51;
 }
 
+[data-theme="dark"] {
+  --bg-color: #25343F;
+  --font-color: #EAEFEF;
+}
+
 body {
     margin: 0;
+}
 }
