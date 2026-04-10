@@ -37,7 +37,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
       //  VERIFICAÇÃO DE LOGIN BLUETOOTH
-      if(sessionStorage.getItem("autenticado") !== "true") {
+      if(localStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html";
       }
 

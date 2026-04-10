@@ -68,7 +68,7 @@
 
     <script>
       //  VERIFICAÇÃO DE LOGIN BLUETOOTH
-      if(sessionStorage.getItem("autenticado") !== "true") {
+      if(localStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html";
       }
 
@@ -165,7 +165,7 @@
       }
       function logout() {
         // Limpa a sessão para obrigar a colocar a password novamente!
-        sessionStorage.removeItem("autenticado");
+        localStorage.removeItem("autenticado");
         // Volta para a página de Login / Bluetooth
         window.location.href = "login.html";
       }    </script>

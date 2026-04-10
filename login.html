@@ -46,7 +46,7 @@
         // Código hardcoded para testes
         if (codigo === "6767-6767") {
           // Guardamos que o utilizador já está autenticado para não lhe pedir a senha outra vez se carregar em F5
-          sessionStorage.setItem("autenticado", "true");
+          localStorage.setItem("autenticado", "true");
           // Redireciona para a página verde (Dashboard Home)
           window.location.href = "index.html";
         } else {
@@ -58,7 +58,7 @@
       }
 
       // Se já estava autenticado na sessão, vai logo direto sem pedir código
-      if(sessionStorage.getItem("autenticado") === "true") {
+      if(localStorage.getItem("autenticado") === "true") {
         window.location.href = "index.html";
       }
     </script>
