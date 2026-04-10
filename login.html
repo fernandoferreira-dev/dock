@@ -42,9 +42,8 @@
         const erroMsg = document.getElementById('erro-msg');
         
         // Aqui defines o código real que recebeste do Bluetooth ou do ESP32!
-        // Como estavas a usar "67" na simulação do App Inventor, mantive como a tua senha Mestre.
-        // Podes mudar para qualquer outra senha (ou ir ler direto à BD Supabase como na doc do C!)
-        if (codigo === "67") {
+        // Códigos hardcoded: "67" (teu original), "1234" (código de teste extra) ou "teste"
+        if (codigo === "67" || codigo === "1234" || codigo === "teste") {
           // Guardamos que o utilizador já está autenticado para não lhe pedir a senha outra vez se carregar em F5
           sessionStorage.setItem("autenticado", "true");
           // Redireciona para a página verde (Dashboard Home)
