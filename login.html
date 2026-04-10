@@ -47,27 +47,64 @@
         input.value = val;
       }
 
-      function verificarCodigo(e) {
+      async function verificarCodigo(e) {
         e.preventDefault();
         const codigo = document.getElementById('codigoAcesso').value.trim();
         const erroMsg = document.getElementById('erro-msg');
+        const btn = e.target.querySelector('button[type="submit"]');
         
-        // Aqui defines o código real que recebeste do Bluetooth ou do ESP32!
-        // Código hardcoded para testes
+        btn.innerHTML = 'A verificar...';
+        btn.disabled = true;
+        btn.classList.add('opacity-50');
+
+        // Código hardcoded para testes (bypass)
         if (codigo === "6767-6767") {
-          // Guardamos que o utilizador já está autenticado para não lhe pedir a senha outra vez se carregar em F5
           localStorage.setItem("autenticado", "true");
-          // Guardamos o código também
           localStorage.setItem("codigoAcesso", codigo);
-          
-          // Redireciona para a página verde (Dashboard Home) TODO: repor para pagamento.html em prod
+          localStorage.setItem("meuSlot", "1"); // Forçamos o slot 1 para testes
           window.location.href = "index.html"; 
-        } else {
-          // Senha errada
-          erroMsg.classList.remove('hidden');
-          // Esconde ao fim de 3s
-          setTimeout(() => { erroMsg.classList.add('hidden'); }, 3000);
+          return;
         }
+
+        // Verificação real na Base de Dados (Supabase)
+        try {
+          const SUPABASE_URL = "https://cvzhdxfomjxawjwxjmnh.supabase.co";
+          const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2emhkeGZvbWp4YXdqd3hqbW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjc0MzgsImV4cCI6MjA4ODk0MzQzOH0.t6cljClgMgGiCiInch1aYUaR-4v7d35HUYp2yh9mdyU";
+          
+          const resposta = await fetch(`${SUPABASE_URL}/rest/v1/cacifo?codigo=eq.${codigo}&select=slot,codigo`, {
+            method: 'GET',
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Authorization": "Bearer " + SUPABASE_KEY
+            }
+          });
+          
+          const dados = await resposta.json();
+
+          if (dados && dados.length > 0 && dados[0].slot > 0) {
+            // Login com sucesso!
+            localStorage.setItem("autenticado", "true");
+            localStorage.setItem("codigoAcesso", dados[0].codigo);
+            localStorage.setItem("meuSlot", dados[0].slot.toString());
+            
+            // Opcional: Se em produção deve ir para o pagamento primeiro, alterar aqui.
+            window.location.href = "index.html"; 
+          } else {
+            // Código não encontrado na base de dados
+            mostrarErro(erroMsg, btn);
+          }
+        } catch (err) {
+          console.error("Erro ao validar código no Supabase:", err);
+          mostrarErro(erroMsg, btn);
+        }
+      }
+
+      function mostrarErro(erroMsg, btn) {
+        erroMsg.classList.remove('hidden');
+        btn.innerHTML = 'Desbloquear Sistema';
+        btn.disabled = false;
+        btn.classList.remove('opacity-50');
+        setTimeout(() => { erroMsg.classList.add('hidden'); }, 3000);
       }
 
       // Se já estava autenticado na sessão, vai logo direto sem pedir código

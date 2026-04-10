@@ -132,16 +132,25 @@
                 
                 // Remove prefixo e divide pelos slots
                 const slotsStr = webString.replace("SPACES:", "").trim().split("|");
-                // Vamos supor que a trotinete deste cliente é o Slot 1 (s0 no código do esp) ou procure o primeiro slot ocupado com bateria > 0
+                // Puxa o slot em que o utilizador fez login (1 a 4). Por defeito 1.
+                const meuSlot = parseInt(localStorage.getItem("meuSlot")) || 1;
+                
+                // O Hardware envia "SPACES: s4,c4 | s3,c3 | s2,c2 | s1,c1" com o array invertido!
+                // Então o Slot 1 real (s1,c1) está no índice 3. O Slot 2 no índice 2. O Slot 4 no índice 0.
+                const indiceNoArray = 4 - meuSlot; 
+                
                 let bateriaEncontrada = "0%";
-                for (let i = 0; i < slotsStr.length; i++) {
-                  const s = slotsStr[i].trim().split(",");
-                  if (s[0] === "1") { // Se estiver ocupado, s == 1
+                
+                if (slotsStr.length === 4 && indiceNoArray >= 0 && indiceNoArray < 4) {
+                  const s = slotsStr[indiceNoArray].trim().split(",");
+                  if (s[0] === "1") { // Apenas atualiza a bateria visivelmente se estiver dada como Ocupada no Hardware
                     bateriaEncontrada = s[1].trim() + "%";
                     gerarNotificacaoLimites(s[1].trim());
-                    break;
+                  } else {
+                    bateriaEncontrada = "Doca Fís. Vazia";
                   }
                 }
+                
                 bateriaElement.innerText = bateriaEncontrada;
                 atualizarTempoRestante(bateriaEncontrada);
                 localStorage.setItem('bateriaAtual', bateriaEncontrada.replace('%', ''));
