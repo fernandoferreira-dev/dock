@@ -48,7 +48,7 @@
           // Guardamos que o utilizador já está autenticado para não lhe pedir a senha outra vez se carregar em F5
           localStorage.setItem("autenticado", "true");
           // Redireciona para a página verde (Dashboard Home)
-          window.location.href = "index.html";
+          window.location.href = "pagamento.html";
         } else {
           // Senha errada
           erroMsg.classList.remove('hidden');
@@ -59,7 +59,7 @@
 
       // Se já estava autenticado na sessão, vai logo direto sem pedir código
       if(localStorage.getItem("autenticado") === "true") {
-        window.location.href = "index.html";
+        window.location.href = "pagamento.html";
       }
     </script>
   </body>

@@ -139,5 +139,11 @@ void loop() {
     
     Serial.println(output); 
     SerialBT.println(output); // MANDAR PARA O TELEMÓVEL!!!!!
+
+    // Sinal de fim de carregamento
+    if (counter3 >= 100 || counter2 >= 100 || counter1 >= 100 || counter0 >= 100) {
+      Serial.println("SINAL: Fim de carregamento (100% atingido)");
+      SerialBT.println("CMD:END_CHARGE");
+    }
   }
 }
