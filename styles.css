@@ -11,7 +11,7 @@
 [data-theme="dark"] {
   /* Modo Escuro - Profundo e moderno (Dark Slate/Navy) */
   --bg-color: #0B1120;
-  --font-color: #F8FAFC; 
+  --font-color: #CBD5E1; /* Texto mais Suave (Slate-300) */
 }
 
 body {
@@ -28,21 +28,21 @@ h1, h2, h3, .font-extrabold, .font-black, .tracking-wider, .tracking-widest {
 /* Modificações específicas do Modo Noturno */
 [data-theme="dark"] .bg-white {
   background-color: #1E293B !important; 
-  color: #F8FAFC !important; 
+  color: #CBD5E1 !important; /* Corpo principal menos agressivo (Slate-300) */
   border-color: #334155 !important;
 }
 
 [data-theme="dark"] .text-gray-800 {
-  color: #F1F5F9 !important; 
+  color: #E2E8F0 !important; /* Títulos (Slate-200) */
 }
 
 [data-theme="dark"] .text-gray-500, [data-theme="dark"] .text-gray-400 {
-  color: #94A3B8 !important; 
+  color: #64748B !important; /* Subtítulos (Slate-500) um nível mais escuro para contraste */
 }
 
 [data-theme="dark"] input, [data-theme="dark"] textarea {
   background-color: #0f172a !important;
-  color: white !important;
+  color: #CBD5E1 !important; /* Retira o branco puro das textboxes */
   border-color: #334155 !important;
 }
 
