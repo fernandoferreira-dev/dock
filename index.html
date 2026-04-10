@@ -15,9 +15,10 @@
       </nav>
       
       <main class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto">
-        <div class="relative w-64 h-64 rounded-full bg-white shadow-xl flex flex-col items-center justify-center border-[8px] border-[var(--comp-color)] mb-8 flex-shrink-0">
-          <img src="./assets/logo.png" alt="Trotineta" class="w-24 h-24 object-contain mb-4" />
-          <p class="text-5xl font-extrabold text-[var(--font-color)]">
+        <div class="relative w-64 h-64 rounded-full bg-white shadow-2xl flex flex-col items-center justify-center border-8 border-[var(--comp-color)] mb-8 flex-shrink-0 group hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 rounded-full border-[12px] border-[var(--comp-color)] opacity-20 animate-ping"></div>
+          <img src="./assets/logo.png" alt="Trotineta" class="w-24 h-24 object-contain mb-4 z-10 drop-shadow-md" />
+          <p class="text-5xl font-black text-[var(--font-color)] z-10 tracking-tight">
             <span id="bateria">100%</span>
           </p>
         </div>
