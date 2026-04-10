@@ -64,6 +64,13 @@
         } else {
           console.log("Comando Simulado na Web: " + comando);
         }
+
+        // Guarda o estado do cacifo para a tela principal
+        if (acao === 'UNLOCK') {
+          localStorage.setItem('cacifoAberto', 'true');
+        } else {
+          localStorage.setItem('cacifoAberto', 'false');
+        }
         
         // Efeito visual bonitinho no momento do clique
         msg.innerText = acao === 'UNLOCK' ? "Aberto" : "Fechado";

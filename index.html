@@ -23,6 +23,13 @@
             <span id="bateria">100%</span>
           </p>
         </div>
+
+        <button onclick="terminarCarregamento()" class="w-full max-w-[250px] py-4 text-sm font-extrabold tracking-wider rounded-xl bg-red-500 text-white shadow-md hover:bg-red-600 active:scale-95 transition-all text-center">
+          TERMINAR CARREGAMENTO
+        </button>
+
+        <div id="end-charge-msg" class="hidden mt-4 text-center text-sm font-bold p-3 rounded-lg w-full max-w-[250px]">
+        </div>
       </main>
 
       <footer class="flex w-full mt-auto bg-[var(--font-color)] text-[var(--bg-color)]">
@@ -37,6 +44,33 @@
       // Se não passou pelo ecrã de login e meteu a password, é chutado para lá!
       if(localStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html";
+      }
+
+      // Função para o botão terminar carregamento
+      function terminarCarregamento() {
+        const msg = document.getElementById('end-charge-msg');
+        
+        // Verifica se no ecrã do controlador o botão de abrir cacifo foi clicado
+        if (localStorage.getItem('cacifoAberto') === 'true') {
+          // Envia o comando de parar pelo AppInventor se necessário
+          if (window.AppInventor) {
+            window.AppInventor.setWebViewString("CMD:END_CHARGE");
+          }
+          
+          msg.innerText = "Carregamento terminado!";
+          msg.className = "mt-4 text-center text-sm font-bold bg-green-100 text-green-700 p-3 rounded-lg w-full max-w-[250px] transition-all";
+          
+          // Opcional: fechar a sessão ou resetar estado
+          // localStorage.removeItem('cacifoAberto');
+        } else {
+          msg.innerText = "Abra o cacifo no Controlador primeiro!";
+          msg.className = "mt-4 text-center text-sm font-bold bg-red-100 text-red-600 p-3 rounded-lg w-full max-w-[250px] transition-all";
+        }
+        
+        setTimeout(() => {
+          msg.classList.add('hidden');
+          msg.className = "hidden mt-4 text-center text-sm font-bold p-3 rounded-lg w-full max-w-[250px]";
+        }, 3000);
       }
 
       // Guarda valores históricos de bateria para o gráfico localmente (opcionalmente pode vir do Supabase)
