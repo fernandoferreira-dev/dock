@@ -64,11 +64,11 @@
             sessionStorage.setItem("autenticado", "true");
             sessionStorage.setItem("codigoAcesso", "6767-6767");
             sessionStorage.setItem("meuSlot", "1"); // Forçamos o slot 1
-            // Usamos um timestamp para forçar o WebViewer a carregar a nova página (anti-cache)
-            window.location.href = "index.html?t=" + Date.now();
           } catch(err) {
-            btn.innerHTML = "Erro Storage";
+            console.warn("Storage info ignored");
           }
+          // Usamos um timestamp para forçar o WebViewer a carregar a nova página (anti-cache)
+          window.location.href = "index.html?t=" + Date.now();
           return;
         }
 
@@ -112,9 +112,11 @@
           const dados = await resposta.json();
 
           if (dados && dados.length > 0 && dados[0].slot > 0) {
-            sessionStorage.setItem("autenticado", "true");
-            sessionStorage.setItem("codigoAcesso", dados[0].codigo);
-            sessionStorage.setItem("meuSlot", dados[0].slot.toString());
+            try {
+              sessionStorage.setItem("autenticado", "true");
+              sessionStorage.setItem("codigoAcesso", dados[0].codigo);
+              sessionStorage.setItem("meuSlot", dados[0].slot.toString());
+            } catch(e) {}
             window.location.href = "index.html?t=" + Date.now(); 
           } else {
             mostrarErro(erroMsg, btn);
@@ -134,10 +136,11 @@
         setTimeout(() => { erroMsg.classList.add('hidden'); }, 3000);
       }
 
-      // Se já estava autenticado na sessão, vai logo direto sem pedir código
-      if(sessionStorage.getItem("autenticado") === "true") {
-        window.location.href = "index.html";
-      }
+      try {
+        if(sessionStorage.getItem("autenticado") === "true") {
+          window.location.href = "index.html";
+        }
+      } catch(e) {}
     </script>
   </body>
 </html>

@@ -62,11 +62,6 @@
     </section>
 
     <script>
-      //  VERIFICAÇÃO DE LOGIN BLUETOOTH
-      if(sessionStorage.getItem("autenticado") !== "true") {
-        window.location.href = "login.html";
-      }
-
       function atualizarCoresBotoes() {
         const isAberto = sessionStorage.getItem('cacifoAberto') === 'true';
         
