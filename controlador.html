@@ -6,7 +6,7 @@
     <title>dock - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
-    <!-- Iniciar Tema --><script>if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
+    <!-- Iniciar Tema --><script>if(sessionStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
   </head>
   <body>
     <section class="flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
@@ -63,12 +63,12 @@
 
     <script>
       //  VERIFICAÇÃO DE LOGIN BLUETOOTH
-      if(localStorage.getItem("autenticado") !== "true") {
+      if(sessionStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html";
       }
 
       function atualizarCoresBotoes() {
-        const isAberto = localStorage.getItem('cacifoAberto') === 'true';
+        const isAberto = sessionStorage.getItem('cacifoAberto') === 'true';
         
         const btnU = document.getElementById('btn-unlock');
         const contU = document.getElementById('unlock-content');
@@ -168,9 +168,9 @@
 
         // Guarda o estado do cacifo para a tela principal
         if (acao === 'UNLOCK') {
-          localStorage.setItem('cacifoAberto', 'true');
+          sessionStorage.setItem('cacifoAberto', 'true');
         } else {
-          localStorage.setItem('cacifoAberto', 'false');
+          sessionStorage.setItem('cacifoAberto', 'false');
         }
         
         atualizarCoresBotoes();

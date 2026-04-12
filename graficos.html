@@ -6,7 +6,7 @@
     <title>dock - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
-    <!-- Iniciar Tema --><script>if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
+    <!-- Iniciar Tema --><script>if(sessionStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
   </head>
   <body>
     <section class="flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
@@ -37,7 +37,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
       //  VERIFICAÇÃO DE LOGIN BLUETOOTH
-      if(localStorage.getItem("autenticado") !== "true") {
+      if(sessionStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html";
       }
 
@@ -45,9 +45,9 @@
       
       // Simulação inicial de log: Array de {hora, nivel}
       // Lógica de cálculo do Carregamento (Bateria Aumentada vs Tempo Juntos)
-      let chargeLog = JSON.parse(localStorage.getItem('chargeLog')) || [];
+      let chargeLog = JSON.parse(sessionStorage.getItem('chargeLog')) || [];
       // { tempoMs: , startBattery: } -> guarda o momento e a bateria exata que a trotinete tinha quando foi conectada
-      let startInfo = JSON.parse(localStorage.getItem('chargeStartInfo')) || null;
+      let startInfo = JSON.parse(sessionStorage.getItem('chargeStartInfo')) || null;
 
       function renderizarGrafico() {
         const ctx = document.getElementById('bateriaChart').getContext('2d');
@@ -94,7 +94,7 @@
       }
 
       function calcularRelacaoCarga() {
-        const bateriaVindaDoESP = localStorage.getItem('bateriaAtual');
+        const bateriaVindaDoESP = sessionStorage.getItem('bateriaAtual');
         
         if (bateriaVindaDoESP) {
           let bateriaAtualInt = parseInt(bateriaVindaDoESP);
@@ -102,7 +102,7 @@
           // Se não houver sessão de carga registrada, ou se a bateria DE REPENTE DIMINUIU muito (alguém a retirou e colocou outra vazia)
           if (!startInfo || bateriaAtualInt < startInfo.startBattery) {
             startInfo = { tempoMs: Date.now(), startBattery: bateriaAtualInt };
-            localStorage.setItem('chargeStartInfo', JSON.stringify(startInfo));
+            sessionStorage.setItem('chargeStartInfo', JSON.stringify(startInfo));
             chargeLog = []; // Reinicia o gráfico limpo!
           }
 
@@ -123,7 +123,7 @@
           // Não deixa o gráfico "infinito" - Guarda apenas os últimos 12 pontos lidos para ter visão focada
           if (chargeLog.length > 12) chargeLog.shift();
           
-          localStorage.setItem('chargeLog', JSON.stringify(chargeLog));
+          sessionStorage.setItem('chargeLog', JSON.stringify(chargeLog));
 
           // Atualiza instantaneamente a tela
           if(chart) {

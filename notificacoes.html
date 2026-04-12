@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
     <script>
-      if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      if(sessionStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
     </script>
   </head>
   <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans transition-colors duration-300">
@@ -47,8 +47,8 @@
         const emptyState = document.getElementById('empty-state');
         const btnLimpar = document.getElementById('btn-limpar');
         
-        // Puxa notificações do localStorage
-        let notificacoes = JSON.parse(localStorage.getItem('notificacoes') || '[]');
+        // Puxa notificações do sessionStorage
+        let notificacoes = JSON.parse(sessionStorage.getItem('notificacoes') || '[]');
         
         list.innerHTML = "";
         
@@ -70,14 +70,14 @@
       }
 
       function limparNotificacoes() {
-        localStorage.removeItem('notificacoes');
-        localStorage.removeItem('notificacoes_nao_lidas');
+        sessionStorage.removeItem('notificacoes');
+        sessionStorage.removeItem('notificacoes_nao_lidas');
         renderizarNotificacoes();
       }
 
       window.onload = () => {
         // Marca como lidas ao entrar
-        localStorage.setItem('notificacoes_nao_lidas', '0');
+        sessionStorage.setItem('notificacoes_nao_lidas', '0');
         renderizarNotificacoes();
       }
     </script>

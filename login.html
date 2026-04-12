@@ -9,7 +9,7 @@
     <title>dock - Login Bluetooth</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
-    <!-- Iniciar Tema --><script>if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
+    <!-- Iniciar Tema --><script>if(sessionStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
   </head>
   <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
     <section class="flex flex-col min-h-screen">
@@ -61,9 +61,9 @@
           btn.innerHTML = 'Entrando...';
           btn.disabled = true;
           try {
-            localStorage.setItem("autenticado", "true");
-            localStorage.setItem("codigoAcesso", "6767-6767");
-            localStorage.setItem("meuSlot", "1"); // Forçamos o slot 1
+            sessionStorage.setItem("autenticado", "true");
+            sessionStorage.setItem("codigoAcesso", "6767-6767");
+            sessionStorage.setItem("meuSlot", "1"); // Forçamos o slot 1
             // Usamos um timestamp para forçar o WebViewer a carregar a nova página (anti-cache)
             window.location.href = "index.html?t=" + Date.now();
           } catch(err) {
@@ -112,9 +112,9 @@
           const dados = await resposta.json();
 
           if (dados && dados.length > 0 && dados[0].slot > 0) {
-            localStorage.setItem("autenticado", "true");
-            localStorage.setItem("codigoAcesso", dados[0].codigo);
-            localStorage.setItem("meuSlot", dados[0].slot.toString());
+            sessionStorage.setItem("autenticado", "true");
+            sessionStorage.setItem("codigoAcesso", dados[0].codigo);
+            sessionStorage.setItem("meuSlot", dados[0].slot.toString());
             window.location.href = "index.html?t=" + Date.now(); 
           } else {
             mostrarErro(erroMsg, btn);
@@ -135,7 +135,7 @@
       }
 
       // Se já estava autenticado na sessão, vai logo direto sem pedir código
-      if(localStorage.getItem("autenticado") === "true") {
+      if(sessionStorage.getItem("autenticado") === "true") {
         window.location.href = "index.html";
       }
     </script>

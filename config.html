@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="./styles.css" />
     <!-- Definir cor do App Inventor WebView -->
     <script>
-      if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-      let lang = localStorage.getItem('lang') || 'pt';
+      if(sessionStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      let lang = sessionStorage.getItem('lang') || 'pt';
     </script>
   </head>
   <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans transition-colors duration-300">
@@ -58,7 +58,7 @@
 
     <script>
       //  VERIFICAÇÃO DE LOGIN BLUETOOTH
-      if(localStorage.getItem("autenticado") !== "true") {
+      if(sessionStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html";
       }
 
@@ -69,7 +69,7 @@
         let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         
         doc.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
+        sessionStorage.setItem('theme', newTheme);
         
         // Atualiza a UI deste botão especificamente de acordo com o idioma!
         updateTexts();
@@ -128,7 +128,7 @@
 
       function toggleLanguage() {
         lang = lang === 'pt' ? 'en' : 'pt';
-        localStorage.setItem('lang', lang);
+        sessionStorage.setItem('lang', lang);
         updateTexts();
       }
 

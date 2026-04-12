@@ -9,7 +9,7 @@
     <title>dock - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
-    <!-- Iniciar Tema --><script>if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
+    <!-- Iniciar Tema --><script>if(sessionStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
   </head>
   <body>
     <section class="flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
@@ -55,7 +55,7 @@
     <script>
       //  VERIFICAÇÃO DE LOGIN BLUETOOTH
       // Se não passou pelo ecrã de login e meteu a password, é chutado para lá!
-      if(localStorage.getItem("autenticado") !== "true") {
+      if(sessionStorage.getItem("autenticado") !== "true") {
         window.location.href = "login.html?t=" + Date.now();
       }
 
@@ -64,7 +64,7 @@
         const msg = document.getElementById('end-charge-msg');
         
         // Verifica se no ecrã do controlador o botão de abrir cacifo foi clicado
-        if (localStorage.getItem('cacifoAberto') === 'true') {
+        if (sessionStorage.getItem('cacifoAberto') === 'true') {
           // Envia o comando de parar pelo AppInventor se necessário
           if (window.AppInventor) {
             window.AppInventor.setWebViewString("CMD:END_CHARGE");
@@ -77,8 +77,8 @@
           msg.className = "mt-4 text-center text-sm font-bold bg-green-100 text-green-700 p-3 rounded-lg w-full max-w-[250px] transition-all";
           
           // Opcional: fechar a sessão ou resetar estado
-          localStorage.removeItem('cacifoAberto');
-          localStorage.removeItem('autenticado');
+          sessionStorage.removeItem('cacifoAberto');
+          sessionStorage.removeItem('autenticado');
           
           setTimeout(() => {
             window.location.href = "login.html?t=" + Date.now();
@@ -98,7 +98,7 @@
       if (!window.bateriaHistorico) window.bateriaHistorico = [];
 
       // Verifica se está em modo de teste e exibe o banner superior
-      if (localStorage.getItem("codigoAcesso") === "6767-6767") {
+      if (sessionStorage.getItem("codigoAcesso") === "6767-6767") {
         document.getElementById('test-banner').classList.remove('hidden');
       }
 
@@ -144,7 +144,7 @@
                 // Remove prefixo e divide pelos slots
                 const slotsStr = webString.replace("SPACES:", "").trim().split("|");
                 // Puxa o slot em que o utilizador fez login (1 a 4). Por defeito 1.
-                const meuSlot = parseInt(localStorage.getItem("meuSlot")) || 1;
+                const meuSlot = parseInt(sessionStorage.getItem("meuSlot")) || 1;
                 
                 // O Hardware envia "SPACES: s4,c4 | s3,c3 | s2,c2 | s1,c1" com o array invertido!
                 // Então o Slot 1 real (s1,c1) está no índice 3. O Slot 2 no índice 2. O Slot 4 no índice 0.
@@ -164,12 +164,12 @@
                 
                 bateriaElement.innerText = bateriaEncontrada;
                 atualizarTempoRestante(bateriaEncontrada);
-                localStorage.setItem('bateriaAtual', bateriaEncontrada.replace('%', ''));
+                sessionStorage.setItem('bateriaAtual', bateriaEncontrada.replace('%', ''));
               } else {
                 ultimaAtualizacaoBluetooth = Date.now();
                 // Caso o AppInventor retorne apenas um número diretamente
                 bateriaElement.innerText = webString.includes("%") ? webString : webString + "%";
-                localStorage.setItem('bateriaAtual', webString.replace('%', ''));
+                sessionStorage.setItem('bateriaAtual', webString.replace('%', ''));
                 gerarNotificacaoLimites(webString.replace('%', ''));
                 atualizarTempoRestante(webString.replace('%', ''));
               }
@@ -189,7 +189,7 @@
         // Verifica a cada 2 segundos se passou muito tempo sem ouvir do hardware (ex: 5s) para forçar o login
         setInterval(() => {
           if(ultimaAtualizacaoBluetooth > 0 && Date.now() - ultimaAtualizacaoBluetooth > 5000) {
-            localStorage.removeItem('autenticado');
+            sessionStorage.removeItem('autenticado');
             window.location.href = "login.html?t=" + Date.now();
           }
         }, 2000);
@@ -198,8 +198,8 @@
       let jaNotificou = false; // flag em memória para não spammar
 
       function gerarNotificacaoLimites(bateriaValue) {
-        // Exemplo: se pagou 1€, o limite é 30% (guardado no localStorage quando fez o bypass ou real)
-        const limiteCarregamento = parseInt(localStorage.getItem('limiteCarregamento')) || 100;
+        // Exemplo: se pagou 1€, o limite é 30% (guardado no sessionStorage quando fez o bypass ou real)
+        const limiteCarregamento = parseInt(sessionStorage.getItem('limiteCarregamento')) || 100;
         const b = parseInt(bateriaValue);
 
         if (!jaNotificou && b >= limiteCarregamento) {
@@ -207,13 +207,13 @@
           
           let novaMensagem = "Sua trotinete atingiu o limite de carregamento (" + b + "%).";
           
-          let notificacoes = JSON.parse(localStorage.getItem('notificacoes') || '[]');
+          let notificacoes = JSON.parse(sessionStorage.getItem('notificacoes') || '[]');
           notificacoes.unshift(novaMensagem); // põe no começo
-          localStorage.setItem('notificacoes', JSON.stringify(notificacoes));
+          sessionStorage.setItem('notificacoes', JSON.stringify(notificacoes));
           
           // Conta as não lidas
-          let naoLidadas = parseInt(localStorage.getItem('notificacoes_nao_lidas') || '0');
-          localStorage.setItem('notificacoes_nao_lidas', (naoLidadas + 1).toString());
+          let naoLidadas = parseInt(sessionStorage.getItem('notificacoes_nao_lidas') || '0');
+          sessionStorage.setItem('notificacoes_nao_lidas', (naoLidadas + 1).toString());
           
           // Pode ativar uma buzina no App Inventor, enviar Toast notification etc.
           if (window.AppInventor) {
@@ -231,7 +231,7 @@
 
       function checkNotificacoesBadge() {
          const badge = document.getElementById('badge-notificacao');
-         let naoLidas = parseInt(localStorage.getItem('notificacoes_nao_lidas') || '0');
+         let naoLidas = parseInt(sessionStorage.getItem('notificacoes_nao_lidas') || '0');
          if (naoLidas > 0) {
             badge.classList.remove('hidden');
          } else {
