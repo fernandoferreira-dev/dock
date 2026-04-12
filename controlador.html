@@ -6,7 +6,7 @@
     <title>dock - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
-    <!-- Iniciar Tema --><script>if(sessionStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
+    <!-- Iniciar Tema --><script>try{if(window.sessionStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   </head>
   <body>
     <section class="flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
@@ -63,7 +63,7 @@
 
     <script>
       function atualizarCoresBotoes() {
-        const isAberto = sessionStorage.getItem('cacifoAberto') === 'true';
+        const isAberto = window.sessionStorage.getItem('cacifoAberto') === 'true';
         
         const btnU = document.getElementById('btn-unlock');
         const contU = document.getElementById('unlock-content');
@@ -163,9 +163,9 @@
 
         // Guarda o estado do cacifo para a tela principal
         if (acao === 'UNLOCK') {
-          sessionStorage.setItem('cacifoAberto', 'true');
+          window.sessionStorage.setItem('cacifoAberto', 'true');
         } else {
-          sessionStorage.setItem('cacifoAberto', 'false');
+          window.sessionStorage.setItem('cacifoAberto', 'false');
         }
         
         atualizarCoresBotoes();

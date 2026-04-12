@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="./styles.css" />
     <!-- Definir cor do App Inventor WebView -->
     <script>
-      if(sessionStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-      let lang = sessionStorage.getItem('lang') || 'pt';
+      if(window.sessionStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      let lang = window.sessionStorage.getItem('lang') || 'pt';
     </script>
   </head>
   <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans transition-colors duration-300">
@@ -64,7 +64,7 @@
         let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         
         doc.setAttribute('data-theme', newTheme);
-        sessionStorage.setItem('theme', newTheme);
+        window.sessionStorage.setItem('theme', newTheme);
         
         // Atualiza a UI deste botão especificamente de acordo com o idioma!
         updateTexts();
@@ -123,7 +123,7 @@
 
       function toggleLanguage() {
         lang = lang === 'pt' ? 'en' : 'pt';
-        sessionStorage.setItem('lang', lang);
+        window.sessionStorage.setItem('lang', lang);
         updateTexts();
       }
 

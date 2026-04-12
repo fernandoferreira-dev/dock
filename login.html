@@ -9,7 +9,7 @@
     <title>dock - Login Bluetooth</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
-    <!-- Iniciar Tema --><script>if(sessionStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
+    <!-- Iniciar Tema --><script>try{if(window.sessionStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   </head>
   <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
     <section class="flex flex-col min-h-screen">
@@ -61,9 +61,9 @@
           btn.innerHTML = 'Entrando...';
           btn.disabled = true;
           try {
-            sessionStorage.setItem("autenticado", "true");
-            sessionStorage.setItem("codigoAcesso", "6767-6767");
-            sessionStorage.setItem("meuSlot", "1"); // Forçamos o slot 1
+            window.sessionStorage.setItem("autenticado", "true");
+            window.sessionStorage.setItem("codigoAcesso", "6767-6767");
+            window.sessionStorage.setItem("meuSlot", "1"); // Forçamos o slot 1
           } catch(err) {
             console.warn("Storage info ignored");
           }
@@ -113,9 +113,9 @@
 
           if (dados && dados.length > 0 && dados[0].slot > 0) {
             try {
-              sessionStorage.setItem("autenticado", "true");
-              sessionStorage.setItem("codigoAcesso", dados[0].codigo);
-              sessionStorage.setItem("meuSlot", dados[0].slot.toString());
+              window.sessionStorage.setItem("autenticado", "true");
+              window.sessionStorage.setItem("codigoAcesso", dados[0].codigo);
+              window.sessionStorage.setItem("meuSlot", dados[0].slot.toString());
             } catch(e) {}
             window.location.href = "index.html?t=" + Date.now(); 
           } else {
@@ -137,7 +137,7 @@
       }
 
       try {
-        if(sessionStorage.getItem("autenticado") === "true") {
+        if(window.sessionStorage.getItem("autenticado") === "true") {
           window.location.href = "index.html";
         }
       } catch(e) {}
