@@ -16,7 +16,7 @@
             <img src="./assets/logo.png" alt="Trotineta" class="w-20 h-20 object-contain" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iI0ZGOWI1MSIgLz48L3N2Zz4='"/>
           </div>
           <h1 class="text-2xl font-extrabold mb-2 text-center text-[var(--font-color)]">Conectar à Doc</h1>
-          <p class="text-sm text-center text-gray-500 mb-6 border-b pb-4">Por favor, introduza o código acesso.</p>
+          <p class="text-sm text-center text-gray-500 mb-6 border-b pb-4">Por favor, introduza o código de acesso (v3).</p>
           
           <form onsubmit="verificarCodigo(event)" class="space-y-5">
             <div>
@@ -47,65 +47,79 @@
         input.value = val;
       }
 
-      async function verificarCodigo(e) {
+      function verificarCodigo(e) {
         e.preventDefault();
         const codigo = document.getElementById('codigoAcesso').value.trim();
         const erroMsg = document.getElementById('erro-msg');
         const btn = e.target.querySelector('button[type="submit"]');
-        
+
+        // BYPASS: Se for o código de teste, resolve sincronamente sem problemas de Promises
+        if (codigo === "6767-6767" || codigo === "6767") {
+          btn.innerHTML = 'Entrando...';
+          btn.disabled = true;
+          try {
+            localStorage.setItem("autenticado", "true");
+            localStorage.setItem("codigoAcesso", "6767-6767");
+            localStorage.setItem("meuSlot", "1"); // Forçamos o slot 1
+            // Usamos um timestamp para forçar o WebViewer a carregar a nova página (anti-cache)
+            window.location.href = "index.html?t=" + Date.now();
+          } catch(err) {
+            btn.innerHTML = "Erro Storage";
+          }
+          return;
+        }
+
+        // Caso contrário, vai verificar à Base de Dados
         btn.innerHTML = 'A verificar...';
         btn.disabled = true;
         btn.classList.add('opacity-50');
 
-        try {
-          // Código hardcoded para testes (bypass)
-          if (codigo === "6767-6767" || codigo === "6767") {
-            localStorage.setItem("autenticado", "true");
-            localStorage.setItem("codigoAcesso", "6767-6767");
-            localStorage.setItem("meuSlot", "1"); // Forçamos o slot 1 para testes
-            window.location.href = "index.html"; 
-            return;
-          }
+        verificarSupabase(codigo, btn, erroMsg);
+      }
 
-          // Verificação real na Base de Dados (Supabase)
+      async function verificarSupabase(codigo, btn, erroMsg) {
+        try {
           const SUPABASE_URL = "https://cvzhdxfomjxawjwxjmnh.supabase.co";
           const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2emhkeGZvbWp4YXdqd3hqbW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjc0MzgsImV4cCI6MjA4ODk0MzQzOH0.t6cljClgMgGiCiInch1aYUaR-4v7d35HUYp2yh9mdyU";
           
           // Removemos o hífen do código apenas para enviar para a DB
           const codigoSemHifen = codigo.replace('-', '');
           
-          // Adiciona um timeout real ao fetch, porque alguns Webviews bloqueiam fetch pendente
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 10000);
-          
-          const resposta = await fetch(`${SUPABASE_URL}/rest/v1/cacifo?codigo=eq.${codigoSemHifen}&select=slot,codigo`, {
+          // Compatibilidade anti-timeout para webviews que encravam com Promises longas
+          const controller = window.AbortController ? new AbortController() : null;
+          const fetchOptions = {
             method: 'GET',
             headers: {
               "apikey": SUPABASE_KEY,
               "Authorization": "Bearer " + SUPABASE_KEY
-            },
-            signal: controller.signal
-          });
+            }
+          };
+          if (controller) {
+            fetchOptions.signal = controller.signal;
+          }
           
-          clearTimeout(timeoutId);
+          let timeoutId = null;
+          if (controller) {
+             timeoutId = setTimeout(() => { controller.abort(); }, 8000);
+          }
+          
+          const resposta = await fetch(`${SUPABASE_URL}/rest/v1/cacifo?codigo=eq.${codigoSemHifen}&select=slot,codigo`, fetchOptions);
+          if (timeoutId) clearTimeout(timeoutId);
+          
           const dados = await resposta.json();
 
           if (dados && dados.length > 0 && dados[0].slot > 0) {
-            // Login com sucesso!
             localStorage.setItem("autenticado", "true");
             localStorage.setItem("codigoAcesso", dados[0].codigo);
             localStorage.setItem("meuSlot", dados[0].slot.toString());
-            
-            window.location.href = "index.html"; 
+            window.location.href = "index.html?t=" + Date.now(); 
           } else {
-            // Código não encontrado na base de dados
             mostrarErro(erroMsg, btn);
           }
         } catch (err) {
-          console.error("Erro ao validar código no Supabase ou LocalStorage:", err);
-          // Mostra o erro no botão para debug
-          btn.innerHTML = "Erro: " + (err.message || "Desconhecido").substring(0, 15);
-          setTimeout(() => mostrarErro(erroMsg, btn), 4000);
+          console.error("Erro no Supabase:", err);
+          btn.innerHTML = "Erro Net/DB";
+          setTimeout(() => mostrarErro(erroMsg, btn), 3500);
         }
       }
 
