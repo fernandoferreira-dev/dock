@@ -16,7 +16,7 @@
             <img src="./assets/logo.png" alt="Trotineta" class="w-20 h-20 object-contain" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iI0ZGOWI1MSIgLz48L3N2Zz4='"/>
           </div>
           <h1 class="text-2xl font-extrabold mb-2 text-center text-[var(--font-color)]">Conectar à Doc</h1>
-          <p class="text-sm text-center text-gray-500 mb-6 border-b pb-4">Por favor, introduza o código Bluetooth fornecido pela estação ou admin.</p>
+          <p class="text-sm text-center text-gray-500 mb-6 border-b pb-4">Por favor, introduza o código acesso.</p>
           
           <form onsubmit="verificarCodigo(event)" class="space-y-5">
             <div>
@@ -58,11 +58,11 @@
         btn.classList.add('opacity-50');
 
         // Código hardcoded para testes (bypass)
-        if (codigo === "6767-6767") {
+        if (codigo === "6767-6767" || codigo === "6767") {
           localStorage.setItem("autenticado", "true");
-          localStorage.setItem("codigoAcesso", codigo);
+          localStorage.setItem("codigoAcesso", "6767-6767");
           localStorage.setItem("meuSlot", "1"); // Forçamos o slot 1 para testes
-          window.location.href = "pagamento.html"; 
+          window.location.href = "index.html"; 
           return;
         }
 
@@ -91,7 +91,7 @@
             localStorage.setItem("meuSlot", dados[0].slot.toString());
             
             // Opcional: Se em produção deve ir para o pagamento primeiro, alterar aqui.
-            window.location.href = "pagamento.html"; 
+            window.location.href = "index.html"; 
           } else {
             // Código não encontrado na base de dados
             mostrarErro(erroMsg, btn);
@@ -112,12 +112,7 @@
 
       // Se já estava autenticado na sessão, vai logo direto sem pedir código
       if(localStorage.getItem("autenticado") === "true") {
-        // Se estiver autenticado mas ainda não definiu o limite (sinal que não pagou), vai para o pagamento
-        if (!localStorage.getItem("limiteCarregamento")) {
-          window.location.href = "pagamento.html";
-        } else {
-          window.location.href = "index.html"; 
-        }
+        window.location.href = "index.html";
       }
     </script>
   </body>
