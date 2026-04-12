@@ -57,31 +57,37 @@
         btn.disabled = true;
         btn.classList.add('opacity-50');
 
-        // Código hardcoded para testes (bypass)
-        if (codigo === "6767-6767" || codigo === "6767") {
-          localStorage.setItem("autenticado", "true");
-          localStorage.setItem("codigoAcesso", "6767-6767");
-          localStorage.setItem("meuSlot", "1"); // Forçamos o slot 1 para testes
-          window.location.href = "index.html"; 
-          return;
-        }
-
-        // Verificação real na Base de Dados (Supabase)
         try {
+          // Código hardcoded para testes (bypass)
+          if (codigo === "6767-6767" || codigo === "6767") {
+            localStorage.setItem("autenticado", "true");
+            localStorage.setItem("codigoAcesso", "6767-6767");
+            localStorage.setItem("meuSlot", "1"); // Forçamos o slot 1 para testes
+            window.location.href = "index.html"; 
+            return;
+          }
+
+          // Verificação real na Base de Dados (Supabase)
           const SUPABASE_URL = "https://cvzhdxfomjxawjwxjmnh.supabase.co";
           const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2emhkeGZvbWp4YXdqd3hqbW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjc0MzgsImV4cCI6MjA4ODk0MzQzOH0.t6cljClgMgGiCiInch1aYUaR-4v7d35HUYp2yh9mdyU";
           
           // Removemos o hífen do código apenas para enviar para a DB
           const codigoSemHifen = codigo.replace('-', '');
           
+          // Adiciona um timeout real ao fetch, porque alguns Webviews bloqueiam fetch pendente
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 10000);
+          
           const resposta = await fetch(`${SUPABASE_URL}/rest/v1/cacifo?codigo=eq.${codigoSemHifen}&select=slot,codigo`, {
             method: 'GET',
             headers: {
               "apikey": SUPABASE_KEY,
               "Authorization": "Bearer " + SUPABASE_KEY
-            }
+            },
+            signal: controller.signal
           });
           
+          clearTimeout(timeoutId);
           const dados = await resposta.json();
 
           if (dados && dados.length > 0 && dados[0].slot > 0) {
@@ -90,15 +96,16 @@
             localStorage.setItem("codigoAcesso", dados[0].codigo);
             localStorage.setItem("meuSlot", dados[0].slot.toString());
             
-            // Opcional: Se em produção deve ir para o pagamento primeiro, alterar aqui.
             window.location.href = "index.html"; 
           } else {
             // Código não encontrado na base de dados
             mostrarErro(erroMsg, btn);
           }
         } catch (err) {
-          console.error("Erro ao validar código no Supabase:", err);
-          mostrarErro(erroMsg, btn);
+          console.error("Erro ao validar código no Supabase ou LocalStorage:", err);
+          // Mostra o erro no botão para debug
+          btn.innerHTML = "Erro: " + (err.message || "Desconhecido").substring(0, 15);
+          setTimeout(() => mostrarErro(erroMsg, btn), 4000);
         }
       }
 
