@@ -62,7 +62,7 @@
           localStorage.setItem("autenticado", "true");
           localStorage.setItem("codigoAcesso", codigo);
           localStorage.setItem("meuSlot", "1"); // Forçamos o slot 1 para testes
-          window.location.href = "index.html"; 
+          window.location.href = "pagamento.html"; 
           return;
         }
 
@@ -91,7 +91,7 @@
             localStorage.setItem("meuSlot", dados[0].slot.toString());
             
             // Opcional: Se em produção deve ir para o pagamento primeiro, alterar aqui.
-            window.location.href = "index.html"; 
+            window.location.href = "pagamento.html"; 
           } else {
             // Código não encontrado na base de dados
             mostrarErro(erroMsg, btn);
@@ -112,8 +112,12 @@
 
       // Se já estava autenticado na sessão, vai logo direto sem pedir código
       if(localStorage.getItem("autenticado") === "true") {
-        // Redireciona para a página verde (Dashboard Home) TODO: repor para pagamento.html em prod
-        window.location.href = "index.html"; 
+        // Se estiver autenticado mas ainda não definiu o limite (sinal que não pagou), vai para o pagamento
+        if (!localStorage.getItem("limiteCarregamento")) {
+          window.location.href = "pagamento.html";
+        } else {
+          window.location.href = "index.html"; 
+        }
       }
     </script>
   </body>
