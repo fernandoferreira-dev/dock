@@ -76,7 +76,7 @@
           try{window.sessionStorage.removeItem('autenticado');}catch(e){}
           
           setTimeout(() => {
-            window.location.href = "login.html?t=" + Date.now();
+            window.location.href = "login.html";
           }, 2500);
         } else {
           msg.innerText = "Abra o cacifo no Controlador primeiro!";
@@ -200,7 +200,7 @@
         setInterval(() => {
           if(ultimaAtualizacaoBluetooth > 0 && Date.now() - ultimaAtualizacaoBluetooth > 5000) {
             try{window.sessionStorage.removeItem('autenticado');}catch(e){}
-            window.location.href = "login.html?t=" + Date.now();
+            window.location.href = "login.html";
           }
         }, 2000);
       };

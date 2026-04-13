@@ -68,7 +68,7 @@
             console.warn("Storage info ignored");
           }
           // Usamos um timestamp para forçar o WebViewer a carregar a nova página (anti-cache)
-          window.location.href = "index.html?t=" + Date.now();
+          window.location.href = "index.html";
           return;
         }
 
@@ -117,7 +117,7 @@
               window.sessionStorage.setItem("codigoAcesso", dados[0].codigo);
               window.sessionStorage.setItem("meuSlot", dados[0].slot.toString());
             } catch(e) {}
-            window.location.href = "index.html?t=" + Date.now(); 
+            window.location.href = "index.html"; 
           } else {
             mostrarErro(erroMsg, btn);
           }
