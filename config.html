@@ -40,7 +40,7 @@
         </div>
 
         <!-- Bloco 3: Suporte (Enviar email ao Administrador) -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full border-2 border-[var(--comp-color)]">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full">
           <h2 class="text-lg font-bold text-[#F1F5F9] dark:text-[var(--font-color)] mb-3 text-center" id="support-title">Falar com o Administrador</h2>
           <input type="text" id="feedback_contact" class="w-full p-3 rounded-lg border-2 border-[var(--comp-color)]/50 focus:border-[var(--comp-color)] text-[#0F172A] focus:outline-none transition-colors mb-3" placeholder="O seu contacto (Email ou Telemóvel)">
           <textarea id="feedback_msg" rows="4" class="w-full p-3 rounded-lg border-2 border-[var(--comp-color)]/50 focus:border-[var(--comp-color)] text-[#0F172A] focus:outline-none transition-all resize-none mb-3" placeholder="A sua mensagem para o suporte..."></textarea>
@@ -177,7 +177,7 @@
               "Mensagem Recebida": msgUsuario,
               "Data de Envio": new Date().toLocaleString('pt-PT'),
               "Sistema": "App SafeCharge",
-              _template: "box", // template com design limpo e centralizado
+              _template: "table", // template tipo tabela estruturada e profissional
               _captcha: "false" // Desativa o captcha para não sair da app
             }),
             headers: {
