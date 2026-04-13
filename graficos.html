@@ -91,8 +91,10 @@
       function calcularRelacaoCarga() {
         let bateriaVindaDoESP = window.sessionStorage.getItem('bateriaAtual');
         
-        // Simulação de dados se não estiver na App real ou não houver dados
-        if (!window.AppInventor) {
+        const isTestMode = window.sessionStorage.getItem("codigoAcesso") === "6767-6767";
+
+        // Simulação de dados se não estiver na App real ou for O MODO DE TESTE
+        if (!window.AppInventor || isTestMode) {
           let fb = parseInt(bateriaVindaDoESP) || 20;
           // Sobe a bateria artificialmente mais rápido para se notar no gráfico
           fb += Math.random() > 0.5 ? 1 : 0; 
