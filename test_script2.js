@@ -25,7 +25,7 @@
           localStorage.setItem("autenticado", "true");
           localStorage.setItem("codigoAcesso", "6767-6767");
           localStorage.setItem("meuSlot", "1"); // Forçamos o slot 1 para testes
-          window.location.href = "pagamento.html"; 
+          window.location.href = "index.html"; 
           return;
         }
 
@@ -54,7 +54,7 @@
             localStorage.setItem("meuSlot", dados[0].slot.toString());
             
             // Opcional: Se em produção deve ir para o pagamento primeiro, alterar aqui.
-            window.location.href = "pagamento.html"; 
+            window.location.href = "index.html"; 
           } else {
             // Código não encontrado na base de dados
             mostrarErro(erroMsg, btn);

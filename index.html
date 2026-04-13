@@ -125,6 +125,8 @@
         }
       }
 
+      let fakeBattery = 20;
+
       // Automatically receive data from App Inventor's WebViewString
       function checkAppInventorData() {
         if (window.AppInventor) {
@@ -169,6 +171,19 @@
                 atualizarTempoRestante(webString.replace('%', ''));
               }
             }
+          }
+        } else {
+          // Fake data simulation
+          ultimaAtualizacaoBluetooth = Date.now();
+          const bateriaElement = document.getElementById("bateria");
+          if (bateriaElement) {
+            fakeBattery += Math.random() > 0.8 ? 1 : 0;
+            if (fakeBattery > 100) fakeBattery = 100;
+            let fakeStr = fakeBattery.toString();
+            bateriaElement.innerText = fakeStr + "%";
+            try{window.sessionStorage.setItem('bateriaAtual', fakeStr);}catch(e){}
+            gerarNotificacaoLimites(fakeStr);
+            atualizarTempoRestante(fakeStr);
           }
         }
       }
