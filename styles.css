@@ -60,3 +60,11 @@ h1, h2, h3, .font-extrabold, .font-black, .tracking-wider, .tracking-widest {
 [data-theme="dark"] .text-red-600 {
   color: #f87171 !important;
 }
+
+/* Modificações específicas do Modo Claro para títulos */
+body:not([data-theme="dark"]) .text-gray-800,
+body:not([data-theme="dark"]) h1,
+body:not([data-theme="dark"]) h2,
+body:not([data-theme="dark"]) h3 {
+  color: #F1F5F9 !important;
+}
