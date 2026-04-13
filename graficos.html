@@ -89,8 +89,18 @@
       }
 
       function calcularRelacaoCarga() {
-        const bateriaVindaDoESP = window.sessionStorage.getItem('bateriaAtual');
+        let bateriaVindaDoESP = window.sessionStorage.getItem('bateriaAtual');
         
+        // Simulação de dados se não estiver na App real ou não houver dados
+        if (!window.AppInventor) {
+          let fb = parseInt(bateriaVindaDoESP) || 20;
+          // Sobe a bateria artificialmente mais rápido para se notar no gráfico
+          fb += Math.random() > 0.5 ? 1 : 0; 
+          if (fb > 100) fb = 100;
+          bateriaVindaDoESP = fb.toString();
+          try{window.sessionStorage.setItem('bateriaAtual', bateriaVindaDoESP);}catch(e){}
+        }
+
         if (bateriaVindaDoESP) {
           let bateriaAtualInt = parseInt(bateriaVindaDoESP);
           
