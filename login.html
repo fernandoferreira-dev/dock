@@ -57,7 +57,7 @@
         const btn = e.target.querySelector('button[type="submit"]');
 
         // BYPASS: Se for o código de teste, resolve sincronamente sem problemas de Promises
-        if (codigo === "6767-6767" || codigo === "6767") {
+        if (codigo === "6767-6767") {
           btn.innerHTML = 'Entrando...';
           btn.disabled = true;
           try {
