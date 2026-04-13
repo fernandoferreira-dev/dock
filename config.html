@@ -43,8 +43,9 @@
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full border-2 border-[var(--comp-color)]">
           <h2 class="text-lg font-bold text-[#F1F5F9] dark:text-[var(--font-color)] mb-3 text-center" id="support-title">Falar com o Administrador</h2>
           <input type="text" id="feedback_contact" class="w-full p-3 rounded-lg border-2 border-[var(--comp-color)]/50 focus:border-[var(--comp-color)] text-[#0F172A] focus:outline-none transition-colors mb-3" placeholder="O seu contacto (Email ou Telemóvel)">
-          <textarea id="feedback_msg" rows="4" class="w-full p-3 rounded-lg border-2 border-[var(--comp-color)]/50 focus:border-[var(--comp-color)] text-[#0F172A] focus:outline-none transition-colors resize-none mb-3" placeholder="A sua mensagem para o suporte..."></textarea>
-          <button onclick="enviarEmail()" class="w-full py-3 font-semibold text-sm rounded-lg bg-[var(--comp-color)] text-white shadow-sm hover:opacity-90 transition-all font-bold" id="btn-send">
+          <textarea id="feedback_msg" rows="4" class="w-full p-3 rounded-lg border-2 border-[var(--comp-color)]/50 focus:border-[var(--comp-color)] text-[#0F172A] focus:outline-none transition-all resize-none mb-3" placeholder="A sua mensagem para o suporte..."></textarea>
+          <div id="feedback_status" class="hidden text-sm font-bold text-center mb-3 p-2 rounded-lg transition-all duration-300"></div>
+          <button onclick="enviarEmail()" class="w-full py-3 font-semibold text-sm rounded-lg bg-[var(--comp-color)] text-white shadow-sm hover:opacity-90 active:scale-95 transition-all font-bold focus:ring-4 focus:ring-[var(--comp-color)]/50 outline-none" id="btn-send">
             Enviar Email
           </button>
         </div>
@@ -134,17 +135,28 @@
       // Aplica logo ao iniciar
       updateTexts();
 
-      // 3. ENVIAR EMAIL (Usando app externa do Tlmvl/PC default com mailto:)
+      // 3. ENVIAR EMAIL (Sem recarregar e com feedback visual)
       async function enviarEmail() {
         const contatoBox = document.getElementById('feedback_contact');
         const msgBox = document.getElementById('feedback_msg');
+        const statusBox = document.getElementById('feedback_status');
         
         const contatoUsuario = contatoBox ? contatoBox.value.trim() : "";
         const msgUsuario = msgBox.value.trim();
         const btnSend = document.getElementById('btn-send');
         
+        // Resetar estilos
+        msgBox.classList.remove('border-red-500', 'ring-2', 'ring-red-500/50');
+        statusBox.classList.add('hidden');
+        statusBox.className = "hidden text-sm font-bold text-center mb-3 p-2 rounded-lg transition-all duration-300";
+
+        const txt = dicionario[lang]; // Para usar mensagens dinâmicas
+        
         if (!msgUsuario) {
-          alert("Por favor, escreva uma mensagem antes de enviar.");
+          msgBox.classList.add('border-red-500', 'ring-2', 'ring-red-500/50'); // Mostrar estado de erro
+          statusBox.innerText = txt.alertEmpty || "Por favor, escreva uma mensagem antes de enviar.";
+          statusBox.classList.remove('hidden');
+          statusBox.classList.add('bg-red-100', 'text-red-700', 'border', 'border-red-400');
           return;
         }
 
@@ -153,7 +165,7 @@
         const endpoint = `https://formsubmit.co/ajax/${emailAdministrador}`; 
         
         const originalText = btnSend.innerHTML;
-        btnSend.innerHTML = "A enviar...";
+        btnSend.innerHTML = `<span class="animate-pulse">A enviar...</span>`;
         btnSend.disabled = true;
 
         try {
@@ -175,14 +187,22 @@
           });
 
           if (response.ok) {
-            alert("Mensagem enviada! (NOTA: Se for a 1ª vez a testar, vá ao seu email jews6665@gmail.com e clique no botão de ativar o FormSubmit).");
             msgBox.value = ''; // Limpar a caixa após enviar
             if (contatoBox) contatoBox.value = ''; // Limpar contacto
+            
+            // Sucesso
+            statusBox.innerText = "Mensagem enviada com sucesso! (Verifique caso seja a 1ª vez)";
+            statusBox.classList.remove('hidden');
+            statusBox.classList.add('bg-green-100', 'text-green-700', 'border', 'border-green-400');
           } else {
-            alert("Erro ao enviar a mensagem. Tente novamente.");
+            statusBox.innerText = "Erro ao enviar a mensagem. Tente novamente.";
+            statusBox.classList.remove('hidden');
+            statusBox.classList.add('bg-red-100', 'text-red-700', 'border', 'border-red-400');
           }
         } catch (error) {
-          alert("Sem internet. Verifique a sua ligação.");
+          statusBox.innerText = "Sem internet. Verifique a sua ligação.";
+          statusBox.classList.remove('hidden');
+          statusBox.classList.add('bg-yellow-100', 'text-yellow-700', 'border', 'border-yellow-400');
         } finally {
           btnSend.innerHTML = originalText;
           btnSend.disabled = false;
