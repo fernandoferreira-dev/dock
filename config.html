@@ -40,11 +40,11 @@
         </div>
 
         <!-- Bloco 3: Suporte (Enviar email ao Administrador) -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full border-2 border-[var(--comp-color)]">
           <h2 class="text-lg font-bold text-[#F1F5F9] dark:text-[var(--font-color)] mb-3 text-center" id="support-title">Falar com o Administrador</h2>
-          <input type="text" id="feedback_contact" class="w-full p-3 rounded-lg border-2 border-gray-200 text-[#0F172A] focus:border-[var(--comp-color)] focus:outline-none transition-colors mb-3" placeholder="O seu contacto (Email ou Telemóvel)">
-          <textarea id="feedback_msg" rows="4" class="w-full p-3 rounded-lg border-2 border-gray-200 text-[#0F172A] focus:border-[var(--comp-color)] focus:outline-none transition-colors resize-none mb-3" placeholder="A sua mensagem para o suporte..."></textarea>
-          <button onclick="enviarEmail()" class="w-full py-3 font-semibold text-sm rounded-lg bg-gray-200 text-[#0F172A] shadow-sm hover:bg-gray-300 transition-all font-bold" id="btn-send">
+          <input type="text" id="feedback_contact" class="w-full p-3 rounded-lg border-2 border-[var(--comp-color)]/50 focus:border-[var(--comp-color)] text-[#0F172A] focus:outline-none transition-colors mb-3" placeholder="O seu contacto (Email ou Telemóvel)">
+          <textarea id="feedback_msg" rows="4" class="w-full p-3 rounded-lg border-2 border-[var(--comp-color)]/50 focus:border-[var(--comp-color)] text-[#0F172A] focus:outline-none transition-colors resize-none mb-3" placeholder="A sua mensagem para o suporte..."></textarea>
+          <button onclick="enviarEmail()" class="w-full py-3 font-semibold text-sm rounded-lg bg-[var(--comp-color)] text-white shadow-sm hover:opacity-90 transition-all font-bold" id="btn-send">
             Enviar Email
           </button>
         </div>
