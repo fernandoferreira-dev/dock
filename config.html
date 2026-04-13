@@ -141,11 +141,9 @@
           return;
         }
 
-        // --- SISTEMA DIRETO DE EMAIL (FORMSPREE) ---
-        // 1. Vai a https://formspree.io/ e regista o email jews6665@gmail.com.
-        // 2. Cria um novo Formulário, copia o link que dão (ex: https://formspree.io/f/abcdabcd)
-        // 3. Cola o link nesse 'endpoint' abaixo:
-        const endpoint = "https://formspree.io/f/SEU_LINK_FORMSPREE"; 
+        // Usar o FormSubmit para envio direto sem criar conta
+        const emailAdministrador = "jews6665@gmail.com";
+        const endpoint = `https://formsubmit.co/ajax/${emailAdministrador}`; 
         
         const originalText = btnSend.innerHTML;
         btnSend.innerHTML = "A enviar...";
@@ -155,8 +153,9 @@
           const response = await fetch(endpoint, {
             method: 'POST',
             body: JSON.stringify({ 
-              assunto: "App SafeCharge: Mensagem de Suporte / Dúvida",
-              mensagem: msgUsuario 
+              _subject: "App SafeCharge: Mensagem de Suporte",
+              mensagem: msgUsuario,
+              _captcha: "false" // Desativa o captcha para não sair da app
             }),
             headers: {
               'Accept': 'application/json',
@@ -165,10 +164,10 @@
           });
 
           if (response.ok) {
-            alert("Mensagem enviada com sucesso! Obrigado pelo seu feedback.");
+            alert("Mensagem enviada! (NOTA: Se for a 1ª vez a testar, vá ao seu email jews6665@gmail.com e clique no botão de ativar o FormSubmit).");
             msgBox.value = ''; // Limpar a caixa após enviar
           } else {
-            alert("Erro ao enviar a mensagem. Por favor, confirme se adicionou o link do Formspree no código.");
+            alert("Erro ao enviar a mensagem. Tente novamente.");
           }
         } catch (error) {
           alert("Sem internet. Verifique a sua ligação.");
