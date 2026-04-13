@@ -153,8 +153,11 @@
           const response = await fetch(endpoint, {
             method: 'POST',
             body: JSON.stringify({ 
-              _subject: "App SafeCharge: Mensagem de Suporte",
-              mensagem: msgUsuario,
+              _subject: "🚀 Novo Feedback: App SafeCharge",
+              "Mensagem Recebida": msgUsuario,
+              "Data de Envio": new Date().toLocaleString('pt-PT'),
+              "Sistema": "App SafeCharge",
+              _template: "box", // template com design limpo e centralizado
               _captcha: "false" // Desativa o captcha para não sair da app
             }),
             headers: {
