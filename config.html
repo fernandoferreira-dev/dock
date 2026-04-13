@@ -25,7 +25,7 @@
         
         <!-- Bloco 1: Tema (Modo Escuro / Claro) -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full text-center">
-          <h2 class="text-lg font-bold text-[#F1F5F9] mb-3" id="theme-title">Aparência</h2>
+          <h2 class="text-lg font-bold text-[var(#F1F5F9)] mb-3" id="theme-title">Aparência</h2>
           <button onclick="toggleTheme()" class="w-full py-3 bg-[var(--font-color)] text-[var(--bg-color)] font-bold rounded-lg transition-colors border border-transparent hover:border-[var(--comp-color)]" id="btn-theme">
             Alternar Modo Noturno
           </button>
@@ -33,7 +33,7 @@
 
         <!-- Bloco 2: Idioma (Português / Inglês) -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full text-center">
-          <h2 class="text-lg font-bold text-[#F1F5F9] mb-3" id="lang-title">Idioma / Language</h2>
+          <h2 class="text-lg font-bold text-[var(--font-color)] mb-3" id="lang-title">Idioma / Language</h2>
           <button onclick="toggleLanguage()" class="w-full py-3 bg-[var(--comp-color)] text-white font-bold rounded-lg transition-colors hover:opacity-80" id="btn-lang">
             Mudar para English
           </button>
@@ -41,7 +41,7 @@
 
         <!-- Bloco 3: Suporte (Enviar email ao Administrador) -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full">
-          <h2 class="text-lg font-bold text-[#F1F5F9] mb-3 text-center" id="support-title">Falar com o Administrador</h2>
+          <h2 class="text-lg font-bold text-[var(--font-color)] mb-3 text-center" id="support-title">Falar com o Administrador</h2>
           <textarea id="feedback_msg" rows="4" class="w-full p-3 rounded-lg border-2 border-gray-200 text-gray-800 focus:border-[var(--comp-color)] focus:outline-none transition-colors resize-none mb-3" placeholder="A sua mensagem para o suporte..."></textarea>
           <button onclick="enviarEmail()" class="w-full py-3 font-semibold text-sm rounded-lg bg-gray-200 text-gray-800 shadow-sm hover:bg-gray-300 transition-all font-bold" id="btn-send">
             Enviar Email
