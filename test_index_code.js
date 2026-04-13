@@ -1,56 +1,4 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <!-- Evitar Cache no WebViewer -->
-    <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>dock - Início</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./styles.css" />
-    <!-- Iniciar Tema --><script>
-      function safeGetItem(key) { try { return window.sessionStorage.getItem(key); } catch(e) { return null; } }try{if(safeGetItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
-  </head>
-  <body>
-    <section class="flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
-      <nav class="flex justify-between items-center p-6 w-full">
-        <a href="notificacoes.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all flex items-center gap-2">
-          Notificações
-          <span id="badge-notificacao" class="hidden flex h-3 w-3 relative">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-          </span>
-        </a>
-        <a href="config.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all">Configurações</a>
-      </nav>
-      
-      <main class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-md mx-auto">
-        <div class="relative w-64 h-64 rounded-full bg-white shadow-2xl flex flex-col items-center justify-center border-8 border-[var(--comp-color)] mb-8 flex-shrink-0 group hover:scale-105 transition-transform duration-500">
-          <div class="absolute inset-0 rounded-full border-[12px] border-[var(--comp-color)] opacity-20 animate-ping"></div>
-          <img src="./assets/logo.png" alt="Trotineta" class="w-24 h-24 object-contain mb-4 z-10 drop-shadow-md" />
-          <p class="text-5xl font-black text-[var(--font-color)] z-10 tracking-tight flex flex-col items-center">
-            <span id="bateria">--%</span>
-            <span id="tempo-restante" class="text-sm font-bold text-gray-400 mt-2 tracking-normal opacity-0 transition-opacity">A calcular...</span>
-          </p>
-        </div>
 
-        <button onclick="terminarCarregamento()" class="w-full max-w-[250px] py-4 text-sm font-extrabold tracking-wider rounded-xl bg-red-500 text-white shadow-md hover:bg-red-600 active:scale-95 transition-all text-center">
-          TERMINAR CARREGAMENTO
-        </button>
-
-        <div id="end-charge-msg" class="hidden mt-4 text-center text-sm font-bold p-3 rounded-lg w-full max-w-[250px]">
-        </div>
-      </main>
-
-      <footer class="flex w-full mt-auto bg-[var(--font-color)] text-[var(--bg-color)]">
-        <a href="graficos.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300">Gráficos</a>
-        <a href="index.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider bg-[var(--comp-color)] text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Início</a>
-        <a href="controlador.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Controlador</a>
-      </footer>
-    </section>
-
-    <script>
       function safeGetItem(key) { try { return window.sessionStorage.getItem(key); } catch(e) { return null; } }
 
       // Função para o botão terminar carregamento
@@ -244,6 +192,4 @@
             badge.classList.add('hidden');
          }
       }
-    </script>
-  </body>
-</html>
+    

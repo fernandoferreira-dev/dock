@@ -1,0 +1,46 @@
+--- index.html
++++ index.html
+@@ -53,8 +53,10 @@
+ 
+     <script>
+ 
++      function safeGetItem(key) { try { return window.sessionStorage.getItem(key); } catch(e) { return null; } }
++
+       // Função para o botão terminar carregamento
+       function terminarCarregamento() {
+         const msg = document.getElementById('end-charge-msg');
+         
+         // Verifica se no ecrã do controlador o botão de abrir cacifo foi clicado
+-        if (window.sessionStorage.getItem('cacifoAberto') === 'true') {
++        if (safeGetItem('cacifoAberto') === 'true') {
+@@ -121,5 +123,5 @@
+       // Automatically receive data from App Inventor's WebViewString
+       function checkAppInventorData() {
+-        const isTestMode = window.sessionStorage.getItem("codigoAcesso") === "6767-6767";
++        const isTestMode = safeGetItem("codigoAcesso") === "6767-6767";
+         
+@@ -135,5 +137,5 @@
+                 // Puxa o slot em que o utilizador fez login (1 a 4). Por defeito 1.
+-                const meuSlot = parseInt(window.sessionStorage.getItem("meuSlot")) || 1;
++                const meuSlot = parseInt(safeGetItem("meuSlot")) || 1;
+@@ -203,5 +205,5 @@
+         // Exemplo: se pagou 1€, o limite é 30% (guardado no window.sessionStorage quando fez o bypass ou real)
+-        const limiteCarregamento = parseInt(window.sessionStorage.getItem('limiteCarregamento')) || 100;
++        const limiteCarregamento = parseInt(safeGetItem('limiteCarregamento')) || 100;
+         const b = parseInt(bateriaValue);
+@@ -211,5 +213,5 @@
+           
+-          let notificacoes = JSON.parse(window.sessionStorage.getItem('notificacoes') || '[]');
++          let notificacoes = JSON.parse(safeGetItem('notificacoes') || '[]');
+           notificacoes.unshift(novaMensagem); // põe no começo
+@@ -216,5 +218,5 @@
+           // Conta as não lidas
+-          let naoLidadas = parseInt(window.sessionStorage.getItem('notificacoes_nao_lidas') || '0');
++          let naoLidadas = parseInt(safeGetItem('notificacoes_nao_lidas') || '0');
+           try{window.sessionStorage.setItem('notificacoes_nao_lidas', (naoLidadas + 1).toString());}catch(e){}
+@@ -235,5 +237,5 @@
+       function checkNotificacoesBadge() {
+          const badge = document.getElementById('badge-notificacao');
+-         let naoLidas = parseInt(window.sessionStorage.getItem('notificacoes_nao_lidas') || '0');
++         let naoLidas = parseInt(safeGetItem('notificacoes_nao_lidas') || '0');
+          if (naoLidas > 0) {
