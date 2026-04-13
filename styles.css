@@ -36,6 +36,14 @@ h1, h2, h3, .font-extrabold, .font-black, .tracking-wider, .tracking-widest {
   color: #E2E8F0 !important; /* Títulos (Slate-200) */
 }
 
+/* Modificações específicas do Modo Claro para títulos */
+body:not([data-theme="dark"]) .text-gray-800,
+body:not([data-theme="dark"]) h1,
+body:not([data-theme="dark"]) h2,
+body:not([data-theme="dark"]) h3 {
+  color: #F1F5F9 !important; /* Títulos no modo claro */
+}
+
 [data-theme="dark"] .text-gray-500, [data-theme="dark"] .text-gray-400 {
   color: #64748B !important; /* Subtítulos (Slate-500) um nível mais escuro para contraste */
 }
