@@ -1,15 +1,4 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>dock - Login Bluetooth</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./styles.css" />
-    <!-- Iniciar Tema --><script>try{if(window.sessionStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+    <!-- Iniciar Tema --><script>if(localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');</script>
   </head>
   <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
     <section class="flex flex-col min-h-screen">
@@ -19,7 +8,7 @@
             <img src="./assets/logo.png" alt="Trotineta" class="w-20 h-20 object-contain" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iI0ZGOWI1MSIgLz48L3N2Zz4='"/>
           </div>
           <h1 class="text-2xl font-extrabold mb-2 text-center text-[var(--font-color)]">Conectar à Doc</h1>
-          <p class="text-sm text-center text-gray-500 mb-6 border-b pb-4">Por favor, introduza o código de acesso (v3).</p>
+          <p class="text-sm text-center text-gray-500 mb-6 border-b pb-4">Por favor, introduza o código acesso.</p>
           
           <form onsubmit="verificarCodigo(event)" class="space-y-5">
             <div>
@@ -50,37 +39,26 @@
         input.value = val;
       }
 
-      function verificarCodigo(e) {
+      async function verificarCodigo(e) {
         e.preventDefault();
         const codigo = document.getElementById('codigoAcesso').value.trim();
         const erroMsg = document.getElementById('erro-msg');
         const btn = e.target.querySelector('button[type="submit"]');
-
-        // BYPASS: Se for o código de teste, resolve sincronamente sem problemas de Promises
-        if (codigo === "6767-6767") {
-          btn.innerHTML = 'Entrando...';
-          btn.disabled = true;
-          try {
-            window.sessionStorage.setItem("autenticado", "true");
-            window.sessionStorage.setItem("codigoAcesso", "6767-6767");
-            window.sessionStorage.setItem("meuSlot", "1"); // Forçamos o slot 1
-          } catch(err) {
-            console.warn("Storage info ignored");
-          }
-          // Usamos um timestamp para forçar o WebViewer a carregar a nova página (anti-cache)
-          window.location.href = "pagamento.html?t=" + Date.now();
-          return;
-        }
-
-        // Caso contrário, vai verificar à Base de Dados
+        
         btn.innerHTML = 'A verificar...';
         btn.disabled = true;
         btn.classList.add('opacity-50');
 
-        verificarSupabase(codigo, btn, erroMsg);
-      }
+        // Código hardcoded para testes (bypass)
+        if (codigo === "6767-6767") {
+          localStorage.setItem("autenticado", "true");
+          localStorage.setItem("codigoAcesso", "6767-6767");
+          localStorage.setItem("meuSlot", "1"); // Forçamos o slot 1 para testes
+          window.location.href = "pagamento.html"; 
+          return;
+        }
 
-      async function verificarSupabase(codigo, btn, erroMsg) {
+        // Verificação real na Base de Dados (Supabase)
         try {
           const SUPABASE_URL = "https://cvzhdxfomjxawjwxjmnh.supabase.co";
           const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2emhkeGZvbWp4YXdqd3hqbW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjc0MzgsImV4cCI6MjA4ODk0MzQzOH0.t6cljClgMgGiCiInch1aYUaR-4v7d35HUYp2yh9mdyU";
@@ -88,43 +66,31 @@
           // Removemos o hífen do código apenas para enviar para a DB
           const codigoSemHifen = codigo.replace('-', '');
           
-          // Compatibilidade anti-timeout para webviews que encravam com Promises longas
-          const controller = window.AbortController ? new AbortController() : null;
-          const fetchOptions = {
+          const resposta = await fetch(`${SUPABASE_URL}/rest/v1/cacifo?codigo=eq.${codigoSemHifen}&select=slot,codigo`, {
             method: 'GET',
             headers: {
               "apikey": SUPABASE_KEY,
               "Authorization": "Bearer " + SUPABASE_KEY
             }
-          };
-          if (controller) {
-            fetchOptions.signal = controller.signal;
-          }
-          
-          let timeoutId = null;
-          if (controller) {
-             timeoutId = setTimeout(() => { controller.abort(); }, 8000);
-          }
-          
-          const resposta = await fetch(`${SUPABASE_URL}/rest/v1/cacifo?codigo=eq.${codigoSemHifen}&select=slot,codigo`, fetchOptions);
-          if (timeoutId) clearTimeout(timeoutId);
+          });
           
           const dados = await resposta.json();
 
           if (dados && dados.length > 0 && dados[0].slot > 0) {
-            try {
-              window.sessionStorage.setItem("autenticado", "true");
-              window.sessionStorage.setItem("codigoAcesso", dados[0].codigo);
-              window.sessionStorage.setItem("meuSlot", dados[0].slot.toString());
-            } catch(e) {}
-            window.location.href = "pagamento.html?t=" + Date.now(); 
+            // Login com sucesso!
+            localStorage.setItem("autenticado", "true");
+            localStorage.setItem("codigoAcesso", dados[0].codigo);
+            localStorage.setItem("meuSlot", dados[0].slot.toString());
+            
+            // Opcional: Se em produção deve ir para o pagamento primeiro, alterar aqui.
+            window.location.href = "pagamento.html"; 
           } else {
+            // Código não encontrado na base de dados
             mostrarErro(erroMsg, btn);
           }
         } catch (err) {
-          console.error("Erro no Supabase:", err);
-          btn.innerHTML = "Erro Net/DB";
-          setTimeout(() => mostrarErro(erroMsg, btn), 3500);
+          console.error("Erro ao validar código no Supabase:", err);
+          mostrarErro(erroMsg, btn);
         }
       }
 
@@ -136,11 +102,8 @@
         setTimeout(() => { erroMsg.classList.add('hidden'); }, 3000);
       }
 
-      try {
-        if(window.sessionStorage.getItem("autenticado") === "true") {
-          window.location.href = "index.html";
-        }
-      } catch(e) {}
+      // Se já estava autenticado na sessão, vai logo direto sem pedir código
+      if(localStorage.getItem("autenticado") === "true") {
+        window.location.href = "pagamento.html";
+      }
     </script>
-  </body>
-</html>
