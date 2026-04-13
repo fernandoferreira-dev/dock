@@ -125,6 +125,19 @@ void loop() {
          digitalWrite(PIN_LOCK_RELAY, LOW);
          Serial.println("Fechadura FECHADA!");
       }
+      else if (command == "CMD:DISCONNECT") {
+         // Executar ações de resgate físico no ESP32
+         digitalWrite(PIN_LOCK_RELAY, LOW); // Trancar a porta novamente por segurança
+         counter3 = 0; counter2 = 0; counter1 = 0; counter0 = 0; // Resetar carga virtual
+         digitalWrite(PIN_APP_RST, HIGH); // Avisar a Basys 2 (FPGA) de reset opcional se usado
+         delay(50);
+         digitalWrite(PIN_APP_RST, LOW);
+         Serial.println("Sessão Terminada. Utilizador Desconectado. Counters Resetados!");
+      }
+      else if (command == "CMD:END_CHARGE") {
+         // Opcional: Ações do "Fim de Carregamento" mas ainda sem sair da app
+         Serial.println("App informa: Carregamento do slot terminado logicamente.");
+      }
     }
   }
 
