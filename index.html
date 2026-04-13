@@ -160,9 +160,9 @@
                 bateriaElement.innerText = bateriaEncontrada;
                 atualizarTempoRestante(bateriaEncontrada);
                 window.sessionStorage.setItem('bateriaAtual', bateriaEncontrada.replace('%', ''));
-              } else {
+              } else if (!webString.startsWith("CMD:")) {
                 ultimaAtualizacaoBluetooth = Date.now();
-                // Caso o AppInventor retorne apenas um número diretamente
+                // Caso o AppInventor retorne apenas um número diretamente (E filtra comandos do sistema)
                 bateriaElement.innerText = webString.includes("%") ? webString : webString + "%";
                 window.sessionStorage.setItem('bateriaAtual', webString.replace('%', ''));
                 gerarNotificacaoLimites(webString.replace('%', ''));
