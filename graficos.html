@@ -97,7 +97,7 @@
           // Se não houver sessão de carga registrada, ou se a bateria DE REPENTE DIMINUIU muito (alguém a retirou e colocou outra vazia)
           if (!startInfo || bateriaAtualInt < startInfo.startBattery) {
             startInfo = { tempoMs: Date.now(), startBattery: bateriaAtualInt };
-            window.sessionStorage.setItem('chargeStartInfo', JSON.stringify(startInfo));
+            try{window.sessionStorage.setItem('chargeStartInfo', JSON.stringify(startInfo));}catch(e){}
             chargeLog = []; // Reinicia o gráfico limpo!
           }
 
@@ -118,7 +118,7 @@
           // Não deixa o gráfico "infinito" - Guarda apenas os últimos 12 pontos lidos para ter visão focada
           if (chargeLog.length > 12) chargeLog.shift();
           
-          window.sessionStorage.setItem('chargeLog', JSON.stringify(chargeLog));
+          try{window.sessionStorage.setItem('chargeLog', JSON.stringify(chargeLog));}catch(e){}
 
           // Atualiza instantaneamente a tela
           if(chart) {

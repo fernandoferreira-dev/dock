@@ -64,7 +64,7 @@
         let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         
         doc.setAttribute('data-theme', newTheme);
-        window.sessionStorage.setItem('theme', newTheme);
+        try{window.sessionStorage.setItem('theme', newTheme);}catch(e){}
         
         // Atualiza a UI deste botão especificamente de acordo com o idioma!
         updateTexts();
@@ -123,7 +123,7 @@
 
       function toggleLanguage() {
         lang = lang === 'pt' ? 'en' : 'pt';
-        window.sessionStorage.setItem('lang', lang);
+        try{window.sessionStorage.setItem('lang', lang);}catch(e){}
         updateTexts();
       }
 

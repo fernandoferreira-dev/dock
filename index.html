@@ -72,8 +72,8 @@
           msg.className = "mt-4 text-center text-sm font-bold bg-green-100 text-green-700 p-3 rounded-lg w-full max-w-[250px] transition-all";
           
           // Opcional: fechar a sessão ou resetar estado
-          window.sessionStorage.removeItem('cacifoAberto');
-          window.sessionStorage.removeItem('autenticado');
+          try{window.sessionStorage.removeItem('cacifoAberto');}catch(e){}
+          try{window.sessionStorage.removeItem('autenticado');}catch(e){}
           
           setTimeout(() => {
             window.location.href = "login.html?t=" + Date.now();
@@ -159,12 +159,12 @@
                 
                 bateriaElement.innerText = bateriaEncontrada;
                 atualizarTempoRestante(bateriaEncontrada);
-                window.sessionStorage.setItem('bateriaAtual', bateriaEncontrada.replace('%', ''));
+                try{window.sessionStorage.setItem('bateriaAtual', bateriaEncontrada.replace('%', ''));}catch(e){}
               } else if (!webString.startsWith("CMD:")) {
                 ultimaAtualizacaoBluetooth = Date.now();
                 // Caso o AppInventor retorne apenas um número diretamente (E filtra comandos do sistema)
                 bateriaElement.innerText = webString.includes("%") ? webString : webString + "%";
-                window.sessionStorage.setItem('bateriaAtual', webString.replace('%', ''));
+                try{window.sessionStorage.setItem('bateriaAtual', webString.replace('%', ''));}catch(e){}
                 gerarNotificacaoLimites(webString.replace('%', ''));
                 atualizarTempoRestante(webString.replace('%', ''));
               }
@@ -184,7 +184,7 @@
         // Verifica a cada 2 segundos se passou muito tempo sem ouvir do hardware (ex: 5s) para forçar o login
         setInterval(() => {
           if(ultimaAtualizacaoBluetooth > 0 && Date.now() - ultimaAtualizacaoBluetooth > 5000) {
-            window.sessionStorage.removeItem('autenticado');
+            try{window.sessionStorage.removeItem('autenticado');}catch(e){}
             window.location.href = "login.html?t=" + Date.now();
           }
         }, 2000);
@@ -204,11 +204,11 @@
           
           let notificacoes = JSON.parse(window.sessionStorage.getItem('notificacoes') || '[]');
           notificacoes.unshift(novaMensagem); // põe no começo
-          window.sessionStorage.setItem('notificacoes', JSON.stringify(notificacoes));
+          try{window.sessionStorage.setItem('notificacoes', JSON.stringify(notificacoes));}catch(e){}
           
           // Conta as não lidas
           let naoLidadas = parseInt(window.sessionStorage.getItem('notificacoes_nao_lidas') || '0');
-          window.sessionStorage.setItem('notificacoes_nao_lidas', (naoLidadas + 1).toString());
+          try{window.sessionStorage.setItem('notificacoes_nao_lidas', (naoLidadas + 1).toString());}catch(e){}
           
           // Pode ativar uma buzina no App Inventor, enviar Toast notification etc.
           if (window.AppInventor) {

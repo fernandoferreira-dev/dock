@@ -163,9 +163,9 @@
 
         // Guarda o estado do cacifo para a tela principal
         if (acao === 'UNLOCK') {
-          window.sessionStorage.setItem('cacifoAberto', 'true');
+          try{window.sessionStorage.setItem('cacifoAberto', 'true');}catch(e){}
         } else {
-          window.sessionStorage.setItem('cacifoAberto', 'false');
+          try{window.sessionStorage.setItem('cacifoAberto', 'false');}catch(e){}
         }
         
         atualizarCoresBotoes();

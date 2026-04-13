@@ -70,14 +70,14 @@
       }
 
       function limparNotificacoes() {
-        window.sessionStorage.removeItem('notificacoes');
-        window.sessionStorage.removeItem('notificacoes_nao_lidas');
+        try{window.sessionStorage.removeItem('notificacoes');}catch(e){}
+        try{window.sessionStorage.removeItem('notificacoes_nao_lidas');}catch(e){}
         renderizarNotificacoes();
       }
 
       window.onload = () => {
         // Marca como lidas ao entrar
-        window.sessionStorage.setItem('notificacoes_nao_lidas', '0');
+        try{window.sessionStorage.setItem('notificacoes_nao_lidas', '0');}catch(e){}
         renderizarNotificacoes();
       }
     </script>
