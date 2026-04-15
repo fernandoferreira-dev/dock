@@ -1,0 +1,27 @@
+--- graficos.html
++++ graficos.html
+@@ -37,6 +37,13 @@
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <script>
++      function safeGetItem(key) { 
++        try { return window.sessionStorage.getItem(key); } 
++        catch(e) { return null; } 
++      }
++
+       let chart;
+       
+-      let chargeLog = JSON.parse(window.sessionStorage.getItem('chargeLog')) || [];
+-      let startInfo = JSON.parse(window.sessionStorage.getItem('chargeStartInfo')) || null;
++      let chargeLog = JSON.parse(safeGetItem('chargeLog')) || [];
++      let startInfo = JSON.parse(safeGetItem('chargeStartInfo')) || null;
+       
+       let lastBatteryUpdate = Date.now();
+@@ -93,7 +100,7 @@
+       function calcularRelacaoCarga() {
+-        let bateriaVindaDoESP = window.sessionStorage.getItem('bateriaAtual');
++        let bateriaVindaDoESP = safeGetItem('bateriaAtual');
+         
+-        const isTestMode = window.sessionStorage.getItem("codigoAcesso") === "6767-6767";
++        const isTestMode = safeGetItem("codigoAcesso") === "6767-6767";
+ 
+         // Simulação de dados se não estiver na App real ou for O MODO DE TESTE

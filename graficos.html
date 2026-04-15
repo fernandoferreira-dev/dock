@@ -6,7 +6,7 @@
     <title>dock - Início</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
-    <!-- Iniciar Tema --><script>try{if(window.sessionStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+    <!-- Iniciar Tema --><script>function safeGetItem(key){try{return window.sessionStorage.getItem(key);}catch(e){return null;}} try{if(safeGetItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   </head>
   <body>
     <section class="flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
@@ -36,13 +36,14 @@
     <!-- Script do Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+      function safeGetItem(key) { try { return window.sessionStorage.getItem(key); } catch(e) { return null; } }
       let chart;
       
       // Simulação inicial de log: Array de {hora, nivel}
       // Lógica de cálculo do Carregamento (Bateria Aumentada vs Tempo Juntos)
-      let chargeLog = JSON.parse(window.sessionStorage.getItem('chargeLog')) || [];
+      let chargeLog = JSON.parse(safeGetItem('chargeLog')) || [];
       // { tempoMs: , startBattery: } -> guarda o momento e a bateria exata que a trotinete tinha quando foi conectada
-      let startInfo = JSON.parse(window.sessionStorage.getItem('chargeStartInfo')) || null;
+      let startInfo = JSON.parse(safeGetItem('chargeStartInfo')) || null;
       
       let lastBatteryUpdate = Date.now();
 
@@ -91,9 +92,9 @@
       }
 
       function calcularRelacaoCarga() {
-        let bateriaVindaDoESP = window.sessionStorage.getItem('bateriaAtual');
+        let bateriaVindaDoESP = safeGetItem('bateriaAtual');
         
-        const isTestMode = window.sessionStorage.getItem("codigoAcesso") === "6767-6767";
+        const isTestMode = safeGetItem("codigoAcesso") === "6767-6767";
 
         // Simulação de dados se não estiver na App real ou for O MODO DE TESTE
         if (!window.AppInventor || isTestMode) {
