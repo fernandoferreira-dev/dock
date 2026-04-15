@@ -74,9 +74,22 @@
             const SUPABASE_URL = "https://cvzhdxfomjxawjwxjmnh.supabase.co";
             const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2emhkeGZvbWp4YXdqd3hqbW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjc0MzgsImV4cCI6MjA4ODk0MzQzOH0.t6cljClgMgGiCiInch1aYUaR-4v7d35HUYp2yh9mdyU";
             
-            // Define e guarda o limite para as notificações
+            // Define e guarda o limite para as notificações e inicia o Relógio Global de Carregamento
             let limite = valorInteiro === 1 ? 30 : 100;
-            try{window.sessionStorage.setItem('limiteCarregamento', limite.toString())}catch(err){console.warn("Storage err");};
+            try {
+              window.sessionStorage.setItem('limiteCarregamento', limite.toString());
+              
+              // Força o valor inicial da bateria aos 20% no exato momento do pagamento, e não só quando abre as páginas
+              window.sessionStorage.setItem('bateriaAtual', '20');
+              
+              // Regista o momento ZERO do carregamento para que TODAS as páginas (controlador, gráficos, index) 
+              // saibam derivar o progresso atual com base no tempo decorrido, mesmo se estiverem fechadas!
+              let startInfo = { tempoMs: Date.now(), startBattery: 20 };
+              window.sessionStorage.setItem('chargeStartInfo', JSON.stringify(startInfo));
+              window.sessionStorage.setItem('chargeLog', JSON.stringify([])); // Limpa gráficos velhos
+            } catch(err) {
+              console.warn("Storage err", err);
+            }
 
             fetch(`${SUPABASE_URL}/rest/v1/pagamentos`, {
               method: 'POST',
