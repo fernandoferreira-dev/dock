@@ -58,10 +58,14 @@
       // Função para o botão terminar carregamento
       function terminarCarregamento() {
         if (isTerminating) return; // Prevent double clicks
+        
+        // Em modo de teste, permite sempre terminar carregamento ignorando cacifo
+        const isTestMode = safeGetItem("codigoAcesso") === "6767-6767";
+        
         const msg = document.getElementById('end-charge-msg');
         
         // Verifica se no ecrã do controlador o botão de abrir cacifo foi clicado
-        if (safeGetItem('cacifoAberto') === 'true') {
+        if (safeGetItem('cacifoAberto') === 'true' || isTestMode) {
           // Envia o comando de parar pelo AppInventor se necessário
           if (window.AppInventor) {
             window.AppInventor.setWebViewString("CMD:END_CHARGE");
