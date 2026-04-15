@@ -73,6 +73,10 @@
           // Opcional: fechar a sessão ou resetar estado
           try{window.sessionStorage.removeItem('cacifoAberto');}catch(e){}
           try{window.sessionStorage.removeItem('autenticado');}catch(e){}
+          try{window.sessionStorage.removeItem('bateriaAtual');}catch(e){}
+          try{window.sessionStorage.removeItem('chargeLog');}catch(e){}
+          try{window.sessionStorage.removeItem('chargeStartInfo');}catch(e){}
+          try{window.sessionStorage.removeItem('limiteCarregamento');}catch(e){}
           
           setTimeout(() => {
             window.location.href = "login.html";
