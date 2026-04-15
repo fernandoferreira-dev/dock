@@ -119,7 +119,7 @@
         }
       }
 
-      let fakeBattery = 20;
+      let fakeBattery = parseInt(safeGetItem('bateriaAtual')) || 20;
       let lastBatteryUpdate = Date.now();
 
       // Automatically receive data from App Inventor's WebViewString
