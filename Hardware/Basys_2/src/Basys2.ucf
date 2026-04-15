@@ -1,0 +1,41 @@
+// --- UART (ESP32 PICO-D4) ---
+NET "UART_TX_FPGA" LOC = "C5"; // JB4 -> RX2 (22)
+NET "UART_RX_FPGA" LOC = "B7"; // JB3 -> TX2 (21)
+
+// Sync e Reset
+NET "SYNC" LOC = "B6"; 
+NET "SYNC" CLOCK_DEDICATED_ROUTE = FALSE;
+NET "pModReset" LOC = "C6";
+
+// --- SWITCHES / SENSORES (Conector JA) ---
+NET "SPOT0" LOC = "B5"; // JA4 -> GPIO 26
+NET "SPOT1" LOC = "J3"; // JA3 -> GPIO 27
+NET "SPOT2" LOC = "A3"; // JA2 -> GPIO 14
+NET "SPOT3" LOC = "B2"; // JA1 -> GPIO 13
+
+// --- RESTANTE HARDWARE ---
+NET "clock" LOC = "B8";
+NET "buttonReset" LOC = "G12";
+
+NET "SEG<0>" LOC = "L14";
+NET "SEG<1>" LOC = "H12";
+NET "SEG<2>" LOC = "N14";
+NET "SEG<3>" LOC = "N11";
+NET "SEG<4>" LOC = "P12";
+NET "SEG<5>" LOC = "L13";
+NET "SEG<6>" LOC = "M12";
+
+NET "AN<0>" LOC = "K14"; 
+NET "AN<1>" LOC = "M13"; 
+NET "AN<2>" LOC = "J12"; 
+NET "AN<3>" LOC = "F12";
+
+NET "LED0" LOC = "P7";
+NET "LED1" LOC = "M11";
+NET "LED2" LOC = "M5";
+NET "LED3" LOC = "P6";
+
+NET "switches<0>" LOC = "K3";
+NET "switches<1>" LOC = "L3";
+NET "switches<2>" LOC = "P11";
+NET "switches<3>" LOC = "B4";
