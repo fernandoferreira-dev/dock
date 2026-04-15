@@ -42,13 +42,9 @@
 
     <script>
       function formatCode(input) {
-        // Remove tudo que não for letras ou números
-        let val = input.value.replace(/[^a-zA-Z0-9]/g, '');
-        // Adiciona automaticamente o hífen após o 4º caractere
-        if (val.length > 4) {
-          val = val.substring(0, 4) + '-' + val.substring(4, 8);
-        }
-        input.value = val;
+        // Agora permite introduzir o código sem forçar o traço visualmente se o utilizador não quiser
+        // Mas podemos limpar espaços no final antes de enviar
+        input.value = input.value.trim();
       }
 
       function verificarCodigo(e) {
