@@ -143,10 +143,13 @@
         setTimeout(() => { erroMsg.classList.add('hidden'); }, 3000);
       }
 
+      // Ao entrar no ecrã de Login (ex: quando a App abre), limpamos os dados salvos garantindo um reinício limpo!
+      // Mantemos apenas a preferência do tema, para que funcione corretamente entre menus e sessões ativas
       try {
-        if(window.sessionStorage.getItem("autenticado") === "true") {
-          window.location.href = "index.html";
-        }
+        const tema_atual = window.sessionStorage.getItem('theme');
+        // Usado para garantir que a App não guarda o login falsamente ao fechar
+        window.sessionStorage.clear();
+        if (tema_atual) window.sessionStorage.setItem('theme', tema_atual);
       } catch(e) {}
     </script>
   </body>
