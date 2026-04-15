@@ -53,8 +53,11 @@
     <script>
       function safeGetItem(key) { try { return window.sessionStorage.getItem(key); } catch(e) { return null; } }
 
+      let isTerminating = false;
+
       // Função para o botão terminar carregamento
       function terminarCarregamento() {
+        if (isTerminating) return; // Prevent double clicks
         const msg = document.getElementById('end-charge-msg');
         
         // Verifica se no ecrã do controlador o botão de abrir cacifo foi clicado
@@ -70,6 +73,12 @@
           msg.innerText = "Carregamento terminado, a desconectar...";
           msg.className = "mt-4 text-center text-sm font-bold bg-green-100 text-green-700 p-3 rounded-lg w-full max-w-[250px] transition-all";
           
+          isTerminating = true;
+          if (typeof fakeBattery !== 'undefined') fakeBattery = 20;
+          document.getElementById('bateria').innerText = "20%";
+          const trNode = document.getElementById('tempo-restante');
+          if (trNode) { trNode.innerText = "A calcular..."; trNode.className = "text-sm font-bold text-gray-400 mt-2 tracking-normal opacity-0 transition-opacity"; }
+
           // Opcional: fechar a sessão ou resetar estado
           try{window.sessionStorage.removeItem('cacifoAberto');}catch(e){}
           try{window.sessionStorage.removeItem('autenticado');}catch(e){}
@@ -128,6 +137,8 @@
 
       // Automatically receive data from App Inventor's WebViewString
       function checkAppInventorData() {
+        if (isTerminating) return; // Wait during redirect/logout
+        
         const isTestMode = safeGetItem("codigoAcesso") === "6767-6767";
         
         if (window.AppInventor && !isTestMode) {
