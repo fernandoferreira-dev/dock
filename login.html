@@ -64,6 +64,10 @@
             window.sessionStorage.setItem("autenticado", "true");
             window.sessionStorage.setItem("codigoAcesso", "6767-6767");
             window.sessionStorage.setItem("meuSlot", "1"); // Forçamos o slot 1
+            // Limpa a bateria e gráfico para recomeçarem
+            window.sessionStorage.removeItem("bateriaAtual");
+            window.sessionStorage.removeItem("chargeLog");
+            window.sessionStorage.removeItem("chargeStartInfo");
           } catch(err) {
             console.warn("Storage info ignored");
           }
@@ -116,6 +120,9 @@
               window.sessionStorage.setItem("autenticado", "true");
               window.sessionStorage.setItem("codigoAcesso", dados[0].codigo);
               window.sessionStorage.setItem("meuSlot", dados[0].slot.toString());
+              window.sessionStorage.removeItem("bateriaAtual");
+              window.sessionStorage.removeItem("chargeLog");
+              window.sessionStorage.removeItem("chargeStartInfo");
             } catch(e) {}
             window.location.href = "pagamento.html"; 
           } else {
