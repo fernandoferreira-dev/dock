@@ -9,6 +9,7 @@
     <title>dock - Início</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
+    <script src="lang.js"></script>
     <!-- Iniciar Tema --><script>
       function safeGetItem(key) { try { return window.sessionStorage.getItem(key); } catch(e) { return null; } }try{if(safeGetItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   </head>
@@ -74,14 +75,14 @@
             }, 500);
           }
           
-          msg.innerText = "Carregamento terminado, a desconectar...";
+          msg.innerText = t("Carregamento terminado, a desconectar...");
           msg.className = "mt-4 text-center text-sm font-bold bg-green-100 text-green-700 p-3 rounded-lg w-full max-w-[250px] transition-all";
           
           isTerminating = true;
           if (typeof fakeBattery !== 'undefined') fakeBattery = 20;
           document.getElementById('bateria').innerText = "20%";
           const trNode = document.getElementById('tempo-restante');
-          if (trNode) { trNode.innerText = "A calcular..."; trNode.className = "text-sm font-bold text-gray-400 mt-2 tracking-normal opacity-0 transition-opacity"; }
+          if (trNode) { trNode.innerText = t("A calcular..."); trNode.className = "text-sm font-bold text-gray-400 mt-2 tracking-normal opacity-0 transition-opacity"; }
 
           // Opcional: fechar a sessão ou resetar estado
           try{window.sessionStorage.removeItem('cacifoAberto');}catch(e){}
@@ -95,7 +96,7 @@
             window.location.href = "login.html";
           }, 2500);
         } else {
-          msg.innerText = "Abra o cacifo no Controlador primeiro!";
+          msg.innerText = t("Abra o cacifo no Controlador primeiro!");
           msg.className = "mt-4 text-center text-sm font-bold bg-red-100 text-red-600 p-3 rounded-lg w-full max-w-[250px] transition-all";
         }
         
@@ -117,7 +118,7 @@
         
         if (isNaN(p)) return;
         if (p >= 100) {
-          trNode.innerText = "Completamente carregado";
+          trNode.innerText = t("Completamente carregado");
           trNode.className = "text-sm font-bold text-green-500 mt-2 tracking-normal transition-opacity";
           return;
         }
@@ -130,9 +131,9 @@
         if (minRestantes > 60) {
           const horas = Math.floor(minRestantes / 60);
           const minutos = minRestantes % 60;
-          trNode.innerText = `~${horas}h ${minutos}m restantes`;
+          trNode.innerText = `~${horas}h ${minutos}m ` + (window.t ? t('restantes') : 'restantes');
         } else {
-          trNode.innerText = `~${minRestantes}m restantes`;
+          trNode.innerText = `~${minRestantes}m ` + (window.t ? t('restantes') : 'restantes');
         }
       }
 
@@ -203,7 +204,7 @@
                     bateriaEncontrada = s[1].trim() + "%";
                     gerarNotificacaoLimites(s[1].trim());
                   } else {
-                    bateriaEncontrada = "Doca Fís. Vazia";
+                    bateriaEncontrada = t("Doca Fís. Vazia");
                   }
                 }
                 
@@ -226,12 +227,23 @@
           const bateriaElement = document.getElementById("bateria");
           if (bateriaElement) {
             const limite = parseInt(safeGetItem('limiteCarregamento')) || 100;
-            if (Date.now() - lastBatteryUpdate >= 5000) {
-              if (fakeBattery < limite) {
-                fakeBattery += 1;
-              }
+            
+            let strInfo = safeGetItem('chargeStartInfo');
+            if (strInfo) {
+              let startInfo = JSON.parse(strInfo);
+              let elapsedSecs = Math.floor((Date.now() - startInfo.tempoMs) / 1000);
+              let increments = Math.floor(elapsedSecs / 5);
+              fakeBattery = startInfo.startBattery + increments;
+              if (fakeBattery > limite) fakeBattery = limite;
               if (fakeBattery > 100) fakeBattery = 100;
-              lastBatteryUpdate = Date.now();
+            } else {
+              if (Date.now() - lastBatteryUpdate >= 5000) {
+                if (fakeBattery < limite) {
+                  fakeBattery += 1;
+                }
+                if (fakeBattery > 100) fakeBattery = 100;
+                lastBatteryUpdate = Date.now();
+              }
             }
             
             let fakeStr = fakeBattery.toString();
@@ -275,7 +287,7 @@
         if (!jaNotificou && b >= limiteCarregamento) {
           jaNotificou = true;
           
-          let novaMensagem = "Sua trotinete atingiu o limite de carregamento (" + b + "%).";
+          let novaMensagem = (window.t ? t("Sua trotinete atingiu o limite de carregamento (") : "Sua trotinete atingiu o limite de carregamento (") + b + "%).";
           
           let notificacoes = JSON.parse(safeGetItem('notificacoes') || '[]');
           notificacoes.unshift(novaMensagem); // põe no começo

@@ -6,6 +6,7 @@
     <title>dock - Início</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
+    <script src="lang.js"></script>
     <!-- Iniciar Tema --><script>function safeGetItem(key){try{return window.sessionStorage.getItem(key);}catch(e){return null;}} try{if(safeGetItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   </head>
   <body>
@@ -59,7 +60,7 @@
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Bateria Carregada (+%)',
+                    label: window.t ? t('Bateria Carregada (+%)') : 'Bateria Carregada (+%)',
                     data: data,
                     borderColor: '#10B981', // Verde esmeralda (energia)
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -81,10 +82,10 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Ganho Energético (%)', font: { weight: 'bold' } }
+                        title: { display: true, text: window.t ? t('Ganho Energético (%)') : 'Ganho Energético (%)', font: { weight: 'bold' } }
                     },
                     x: {
-                        title: { display: true, text: 'Tempo a carregar na Dock', font: { weight: 'bold' } }
+                        title: { display: true, text: window.t ? t('Tempo a carregar na Dock') : 'Tempo a carregar na Dock', font: { weight: 'bold' } }
                     }
                 }
             }
@@ -100,13 +101,20 @@
         if (!window.AppInventor || isTestMode) {
           let fb = parseInt(bateriaVindaDoESP) || 20;
           const limite = parseInt(safeGetItem('limiteCarregamento')) || 100;
-          // Sobe a bateria artificialmente mais rápido para se notar no gráfico
-          if (Date.now() - lastBatteryUpdate >= 5000) {
-            if (fb < limite) {
-              fb += 1;
+          
+          if (startInfo) {
+            let elapsedSecs = Math.floor((Date.now() - startInfo.tempoMs) / 1000);
+            let increments = Math.floor(elapsedSecs / 5);
+            fb = startInfo.startBattery + increments;
+            if (fb > limite) fb = limite;
+            if (fb > 100) fb = 100;
+          } else {
+            if (Date.now() - lastBatteryUpdate >= 5000) {
+              if (fb < limite) fb += 1;
+              lastBatteryUpdate = Date.now();
             }
-            lastBatteryUpdate = Date.now();
           }
+          
           if (fb > 100) fb = 100;
           bateriaVindaDoESP = fb.toString();
           try{window.sessionStorage.setItem('bateriaAtual', bateriaVindaDoESP);}catch(e){}

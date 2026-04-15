@@ -9,6 +9,7 @@
     <title>dock - Login Bluetooth</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
+    <script src="lang.js"></script>
     <!-- Iniciar Tema --><script>try{if(window.sessionStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   </head>
   <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
@@ -58,7 +59,7 @@
 
         // BYPASS: Se for o código de teste, resolve sincronamente sem problemas de Promises
         if (codigo === "6767-6767") {
-          btn.innerHTML = 'Entrando...';
+          btn.innerHTML = ' + t('Entrando...');
           btn.disabled = true;
           try {
             window.sessionStorage.setItem("autenticado", "true");
@@ -77,7 +78,7 @@
         }
 
         // Caso contrário, vai verificar à Base de Dados
-        btn.innerHTML = 'A verificar...';
+        btn.innerHTML = ' + t('A verificar...' );
         btn.disabled = true;
         btn.classList.add('opacity-50');
 
@@ -130,14 +131,14 @@
           }
         } catch (err) {
           console.error("Erro no Supabase:", err);
-          btn.innerHTML = "Erro Net/DB";
+          btn.innerHTML = t("Erro Net/DB");
           setTimeout(() => mostrarErro(erroMsg, btn), 3500);
         }
       }
 
       function mostrarErro(erroMsg, btn) {
         erroMsg.classList.remove('hidden');
-        btn.innerHTML = 'Desbloquear Sistema';
+        btn.innerHTML = ' + t('Desbloquear Sistema');
         btn.disabled = false;
         btn.classList.remove('opacity-50');
         setTimeout(() => { erroMsg.classList.add('hidden'); }, 3000);

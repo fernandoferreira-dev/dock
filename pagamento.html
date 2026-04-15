@@ -6,6 +6,7 @@
     <title>dock - Pagamento</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./styles.css" />
+    <script src="lang.js"></script>
     <script>try{if(window.sessionStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   </head>
   <body class="bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
@@ -58,7 +59,7 @@
         e.preventDefault();
         const btn = e.target.querySelector('button[type="submit"]');
         
-        btn.innerHTML = '<span class="animate-pulse">A Processar...</span>';
+        btn.innerHTML = '<span class="animate-pulse">' + t('A Processar...') + '</span>';
         btn.disabled = true;
 
         // Simula tempo de API
@@ -111,7 +112,7 @@
             }
 
             e.target.reset();
-            btn.innerHTML = 'Aprovado!';
+            btn.innerHTML = t('Aprovado!');
             
             // Vai direto para o ecrã inicial sem mostrar o container verde intermédio (como no outro form)
             setTimeout(() => {
@@ -119,7 +120,7 @@
             }, 800);
           } catch(generalErr) {
             console.error("Erro na UI", generalErr);
-            btn.innerHTML = 'Erro! Voltar';
+            btn.innerHTML = t('Erro! Voltar');
             btn.disabled = false;
           }
         }, 1500);
