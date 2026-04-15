@@ -99,9 +99,12 @@
         // Simulação de dados se não estiver na App real ou for O MODO DE TESTE
         if (!window.AppInventor || isTestMode) {
           let fb = parseInt(bateriaVindaDoESP) || 20;
+          const limite = parseInt(safeGetItem('limiteCarregamento')) || 100;
           // Sobe a bateria artificialmente mais rápido para se notar no gráfico
           if (Date.now() - lastBatteryUpdate >= 5000) {
-            fb += 1;
+            if (fb < limite) {
+              fb += 1;
+            }
             lastBatteryUpdate = Date.now();
           }
           if (fb > 100) fb = 100;

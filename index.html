@@ -174,8 +174,11 @@
           ultimaAtualizacaoBluetooth = Date.now();
           const bateriaElement = document.getElementById("bateria");
           if (bateriaElement) {
+            const limite = parseInt(safeGetItem('limiteCarregamento')) || 100;
             if (Date.now() - lastBatteryUpdate >= 5000) {
-              fakeBattery += 1;
+              if (fakeBattery < limite) {
+                fakeBattery += 1;
+              }
               if (fakeBattery > 100) fakeBattery = 100;
               lastBatteryUpdate = Date.now();
             }
@@ -230,11 +233,9 @@
           if (window.AppInventor) {
              window.AppInventor.setWebViewString("CMD:NOTIFY_LIMIT_REACHED");
           } else {
-             // Notificação do navegador (se suportado/aceite) ou apenas alert native
+             // Notificação do navegador (se suportado/aceite)
              if ("Notification" in window && Notification.permission === "granted") {
                 new Notification("Terminado!", {body: novaMensagem});
-             } else {
-                alert("Nova Notificação: " + novaMensagem);
              }
           }
         }

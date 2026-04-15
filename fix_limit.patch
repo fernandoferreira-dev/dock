@@ -1,0 +1,21 @@
+--- index.html
++++ index.html
+@@ -176,8 +176,14 @@
+           if (bateriaElement) {
++            const limite = parseInt(safeGetItem('limiteCarregamento')) || 100;
+             if (Date.now() - lastBatteryUpdate >= 5000) {
+-              fakeBattery += 1;
++              if (fakeBattery < limite) {
++                fakeBattery += 1;
++              }
+               if (fakeBattery > 100) fakeBattery = 100;
+               lastBatteryUpdate = Date.now();
+             }
+@@ -236,7 +242,7 @@
+              if ("Notification" in window && Notification.permission === "granted") {
+                 new Notification("Terminado!", {body: novaMensagem});
+-             } else {
+-                alert("Nova Notificação: " + novaMensagem);
+              }
+           }
+         }
