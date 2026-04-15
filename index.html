@@ -117,23 +117,41 @@
         trNode.classList.remove('opacity-0');
         
         if (isNaN(p)) return;
-        if (p >= 100) {
-          trNode.innerText = t("Completamente carregado");
+        
+        const limite = parseInt(safeGetItem('limiteCarregamento')) || 100;
+        const faltamPerc = limite - p;
+
+        if (faltamPerc <= 0) {
+          trNode.innerText = window.t ? t("Completamente carregado") : "Completamente carregado";
           trNode.className = "text-sm font-bold text-green-500 mt-2 tracking-normal transition-opacity";
           return;
         }
 
-        // Estimativa simples: 1% recarrega em 1.5 minutos (0 a 100 em 2.5h).
-        const faltamPerc = 100 - p;
-        const minRestantes = Math.floor(faltamPerc * 1.5);
-        
         trNode.className = "text-sm font-bold text-gray-500 mt-2 tracking-normal transition-opacity";
-        if (minRestantes > 60) {
-          const horas = Math.floor(minRestantes / 60);
-          const minutos = minRestantes % 60;
-          trNode.innerText = `~${horas}h ${minutos}m ` + (window.t ? t('restantes') : 'restantes');
+        
+        const isTestMode = safeGetItem("codigoAcesso") === "6767-6767" || !window.AppInventor;
+        
+        if (isTestMode) {
+          // No simulador da apresentação, subimos 1% a cada 5 segundos cravados
+          const segRestantes = faltamPerc * 5;
+          const min = Math.floor(segRestantes / 60);
+          const s = segRestantes % 60;
+          
+          if (min > 0) {
+            trNode.innerText = `~${min}m ${s}s ` + (window.t ? t('restantes') : 'restantes');
+          } else {
+            trNode.innerText = `~${s}s ` + (window.t ? t('restantes') : 'restantes');
+          }
         } else {
-          trNode.innerText = `~${minRestantes}m ` + (window.t ? t('restantes') : 'restantes');
+          // Realidade: Estimativa simples: 1% recarrega em 1.5 minutos (0 a 100 em 2.5h).
+          const minRestantes = Math.floor(faltamPerc * 1.5);
+          if (minRestantes > 60) {
+            const horas = Math.floor(minRestantes / 60);
+            const minutos = minRestantes % 60;
+            trNode.innerText = `~${horas}h ${minutos}m ` + (window.t ? t('restantes') : 'restantes');
+          } else {
+            trNode.innerText = `~${minRestantes}m ` + (window.t ? t('restantes') : 'restantes');
+          }
         }
       }
 
