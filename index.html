@@ -139,6 +139,38 @@
       let fakeBattery = parseInt(safeGetItem('bateriaAtual')) || 20;
       let lastBatteryUpdate = Date.now();
 
+      function sincronizarGraficoLocal(bateriaVindaDoESP) {
+        if (!bateriaVindaDoESP || isNaN(parseInt(bateriaVindaDoESP))) return;
+        let bateriaAtualInt = parseInt(bateriaVindaDoESP);
+        
+        let strInfo = safeGetItem('chargeStartInfo');
+        let startInfo = strInfo ? JSON.parse(strInfo) : null;
+        let strLog = safeGetItem('chargeLog');
+        let chargeLog = strLog ? JSON.parse(strLog) : [];
+
+        if (!startInfo || bateriaAtualInt < startInfo.startBattery) {
+          startInfo = { tempoMs: Date.now(), startBattery: bateriaAtualInt };
+          try{window.sessionStorage.setItem('chargeStartInfo', JSON.stringify(startInfo));}catch(e){}
+          chargeLog = [];
+        }
+
+        let ganhoPercentual = bateriaAtualInt - startInfo.startBattery;
+        let passedMs = Date.now() - startInfo.tempoMs;
+        let passedSecs = Math.floor(passedMs / 1000);
+        let passedMins = Math.floor(passedSecs / 60);
+        let remainderSecs = passedSecs % 60;
+        let strCronometro = passedMins > 0 ? `${passedMins}m ${remainderSecs}s` : `${remainderSecs}s`;
+
+        // Se já gravámos no mesmo segundo (ex: gráfico ou index no mesmo frame), ignorar
+        if (chargeLog.length > 0 && chargeLog[chargeLog.length - 1].tempoStr === strCronometro) return;
+
+        // Guarda o ponto e evita ter arrays infinitos
+        chargeLog.push({ tempoStr: strCronometro, ganho: ganhoPercentual });
+        if (chargeLog.length > 15) chargeLog.shift();
+        
+        try{window.sessionStorage.setItem('chargeLog', JSON.stringify(chargeLog));}catch(e){}
+      }
+
       // Automatically receive data from App Inventor's WebViewString
       function checkAppInventorData() {
         if (isTerminating) return; // Wait during redirect/logout
@@ -226,6 +258,11 @@
             window.location.href = "login.html";
           }
         }, 2000);
+        
+        // Coleta dados para o gráfico de forma contínua enquanto na página Inicial
+        setInterval(() => {
+          sincronizarGraficoLocal(safeGetItem('bateriaAtual'));
+        }, 3000);
       };
 
       let jaNotificou = false; // flag em memória para não spammar

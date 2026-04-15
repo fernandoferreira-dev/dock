@@ -133,11 +133,13 @@
           
           let strCronometro = passedMins > 0 ? `${passedMins}m ${remainderSecs}s` : `${remainderSecs}s`;
 
+          if (chargeLog.length > 0 && chargeLog[chargeLog.length - 1].tempoStr === strCronometro) return;
+
           // Regista este ponto no gráfico
           chargeLog.push({ tempoStr: strCronometro, ganho: ganhoPercentual });
           
-          // Não deixa o gráfico "infinito" - Guarda apenas os últimos 12 pontos lidos para ter visão focada
-          if (chargeLog.length > 12) chargeLog.shift();
+          // Não deixa o gráfico "infinito" - Guarda apenas os últimos 15 pontos lidos para ter visão focada
+          if (chargeLog.length > 15) chargeLog.shift();
           
           try{window.sessionStorage.setItem('chargeLog', JSON.stringify(chargeLog));}catch(e){}
 
