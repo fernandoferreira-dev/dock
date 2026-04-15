@@ -1,0 +1,18 @@
+--- graficos.html
++++ graficos.html
+@@ -95,4 +95,5 @@
+       let chargeLog = JSON.parse(window.sessionStorage.getItem('chargeLog')) || [];
+       let startInfo = JSON.parse(window.sessionStorage.getItem('chargeStartInfo')) || null;
++      let lastBatteryUpdate = Date.now();
+ 
+       function renderizarGrafico() {
+@@ -138,5 +139,8 @@
+         if (!window.AppInventor || isTestMode) {
+           let fb = parseInt(bateriaVindaDoESP) || 20;
+-          fb += Math.random() > 0.5 ? 1 : 0; 
++          if (Date.now() - lastBatteryUpdate >= 5000) {
++            fb += 1;
++            lastBatteryUpdate = Date.now();
++          }
+           if (fb > 100) fb = 100;
+           bateriaVindaDoESP = fb.toString();

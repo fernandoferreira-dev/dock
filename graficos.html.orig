@@ -43,8 +43,6 @@
       let chargeLog = JSON.parse(window.sessionStorage.getItem('chargeLog')) || [];
       // { tempoMs: , startBattery: } -> guarda o momento e a bateria exata que a trotinete tinha quando foi conectada
       let startInfo = JSON.parse(window.sessionStorage.getItem('chargeStartInfo')) || null;
-      
-      let lastBatteryUpdate = Date.now();
 
       function renderizarGrafico() {
         const ctx = document.getElementById('bateriaChart').getContext('2d');
@@ -99,10 +97,7 @@
         if (!window.AppInventor || isTestMode) {
           let fb = parseInt(bateriaVindaDoESP) || 20;
           // Sobe a bateria artificialmente mais rápido para se notar no gráfico
-          if (Date.now() - lastBatteryUpdate >= 5000) {
-            fb += 1;
-            lastBatteryUpdate = Date.now();
-          }
+          fb += Math.random() > 0.5 ? 1 : 0; 
           if (fb > 100) fb = 100;
           bateriaVindaDoESP = fb.toString();
           try{window.sessionStorage.setItem('bateriaAtual', bateriaVindaDoESP);}catch(e){}

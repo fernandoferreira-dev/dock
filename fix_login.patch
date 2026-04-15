@@ -1,0 +1,23 @@
+--- login.html
++++ login.html
+@@ -69,5 +69,5 @@
+           }
+           // Usamos um timestamp para forçar o WebViewer a carregar a nova página (anti-cache)
+-          window.location.href = "pagamento.html";
++          window.location.href = "pagamento.html";
+           return;
+         }
+@@ -118,5 +118,5 @@
+               window.sessionStorage.setItem("meuSlot", dados[0].slot.toString());
+             } catch(e) {}
+-            window.location.href = "pagamento.html"; 
++            window.location.href = "pagamento.html"; 
+           } else {
+             mostrarErro(erroMsg, btn);
+@@ -139,5 +139,5 @@
+       try {
+         if(window.sessionStorage.getItem("autenticado") === "true") {
+-          window.location.href = "pagamento.html";
++          window.location.href = "index.html";
+         }
+       } catch(e) {}

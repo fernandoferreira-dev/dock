@@ -1,41 +1,4 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>dock - Início</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./styles.css" />
-    <!-- Iniciar Tema --><script>try{if(window.sessionStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
-  </head>
-  <body>
-    <section class="flex flex-col min-h-screen bg-[var(--bg-color)] text-[var(--font-color)] font-sans">
-      <nav class="flex justify-between items-center p-6">
-        <button class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all">Notificações</button>
-        <a href="config.html" class="px-4 py-2 font-semibold text-sm rounded-full bg-white shadow-sm hover:ring-2 hover:ring-[var(--comp-color)] transition-all">Configurações</a>
-      </nav>
-      
-      <main class="flex-1 flex flex-col items-center justify-start p-6 w-full max-w-lg mx-auto">
-        <h1 class="text-2xl font-extrabold mb-6 text-center text-[var(--comp-color)]">Evolução da Bateria</h1>
-        
-        <div class="bg-white p-4 rounded-2xl shadow-xl w-full mb-8 border border-gray-100 relative overflow-hidden group">
-          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000 z-0"></div>
-          <div class="relative z-10">
-            <canvas id="bateriaChart"></canvas>
-          </div>
-        </div>
-      </main>
 
-      <footer class="flex w-full mt-auto bg-[var(--font-color)] text-[var(--bg-color)] cursor-pointer">
-        <a href="graficos.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider bg-[var(--comp-color)] text-[var(--font-color)] transition-colors duration-300">Gráficos</a>
-        <a href="index.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Início</a>
-        <a href="controlador.html" class="flex-1 py-5 text-center text-sm font-bold uppercase tracking-wider hover:bg-[var(--comp-color)] hover:text-[var(--font-color)] transition-colors duration-300 border-l border-[var(--bg-color)]/20">Controlador</a>
-      </footer>
-    </section>
-
-    <!-- Script do Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
       let chart;
       
       // Simulação inicial de log: Array de {hora, nivel}
@@ -150,6 +113,4 @@
       renderizarGrafico();
       // Executa o "Inspetor de Bateria" a cada 3 segundos, puxando do ESP32
       setInterval(calcularRelacaoCarga, 3000);
-    </script>
-  </body>
-</html>
+    
