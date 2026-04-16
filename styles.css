@@ -41,7 +41,7 @@ body:not([data-theme="dark"]) .text-gray-800,
 body:not([data-theme="dark"]) h1,
 body:not([data-theme="dark"]) h2,
 body:not([data-theme="dark"]) h3 {
-  color: #F1F5F9 !important; /* Títulos no modo claro */
+  color: #0F172A !important; /* Títulos no modo claro */
 }
 
 [data-theme="dark"] .text-gray-500, [data-theme="dark"] .text-gray-400 {
@@ -74,5 +74,5 @@ body:not([data-theme="dark"]) .text-gray-800,
 body:not([data-theme="dark"]) h1,
 body:not([data-theme="dark"]) h2,
 body:not([data-theme="dark"]) h3 {
-  color: #F1F5F9 !important;
+  color: #0F172A !important;
 }
