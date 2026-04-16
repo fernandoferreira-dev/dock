@@ -25,7 +25,7 @@
           <form onsubmit="verificarCodigo(event)" class="space-y-5">
             <div>
               <label class="block text-sm font-semibold mb-1">Código de Acesso</label>
-              <input type="text" id="codigoAcesso" oninput="formatCode(this, event)" maxlength="9" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[var(--comp-color)] focus:outline-none transition-colors text-center text-2xl tracking-widest" placeholder="xxxx-xxxx" required>
+              <input type="text" id="codigoAcesso" oninput="formatCode(this)" maxlength="9" class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[var(--comp-color)] focus:outline-none transition-colors text-center text-2xl tracking-widest" placeholder="xxxx-xxxx" required>
             </div>
 
             <button type="submit" class="w-full py-4 mt-6 bg-[var(--font-color)] text-[var(--bg-color)] font-extrabold rounded-xl uppercase tracking-widest hover:bg-[var(--comp-color)] hover:shadow-xl active:scale-95 transition-all duration-300 shadow-md">
@@ -41,18 +41,30 @@
     </section>
 
     <script>
-      function formatCode(input, event) {
-        // Se estivermos a apagar (Backspace), não forçamos um novo traço para evitar prender o cursor
-        if (event && event.inputType === 'deleteContentBackward') return;
+      let lastCodeLength = 0;
+      function formatCode(input) {
+        // Detectar se o utilizador está a apagar caracteres ou a escrever novos (funciona melhor que o event em WebViews)
+        let isDeleting = input.value.length < lastCodeLength;
         
+        // Fica apenas com os números e letras digitados
         let val = input.value.replace(/[^a-zA-Z0-9]/g, '');
-        // Adiciona automaticamente o hífen assim que chegamos ou passamos o 4º caractere
-        if (val.length >= 4) {
-          let lastPart = val.substring(4, 8);
-          input.value = val.substring(0, 4) + (val.length > 4 || lastPart !== '' ? '-' + lastPart : '-');
+        
+        // Logica rigorosa de formatação
+        if (val.length > 4) {
+          input.value = val.substring(0, 4) + '-' + val.substring(4, 8);
+        } else if (val.length === 4) {
+          // Apenas adiciona o traço sozinho se o utilizador acabou chegar ao 4º digito e não a apagar para trás
+          if (!isDeleting) {
+            input.value = val + '-';
+          } else {
+            input.value = val;
+          }
         } else {
           input.value = val;
         }
+        
+        // Guardar o novo tamanho na variável global desta página
+        lastCodeLength = input.value.length;
       }
 
       function verificarCodigo(e) {
