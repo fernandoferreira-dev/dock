@@ -80,18 +80,7 @@
           msg.className = "mt-4 text-center text-sm font-bold bg-green-100 text-green-700 p-3 rounded-lg w-full max-w-[250px] transition-all";
           
           isTerminating = true;
-          if (typeof fakeBattery !== 'undefined') fakeBattery = 20;
-          document.getElementById('bateria').innerText = "20%";
-          const trNode = document.getElementById('tempo-restante');
-          if (trNode) { trNode.innerText = t("A calcular..."); trNode.className = "text-sm font-bold text-gray-400 mt-2 tracking-normal opacity-0 transition-opacity"; }
-
-          // Opcional: fechar a sessão ou resetar estado
-          try{window.sessionStorage.removeItem('cacifoAberto');}catch(e){}
-          try{window.sessionStorage.removeItem('autenticado');}catch(e){}
-          try{window.sessionStorage.removeItem('bateriaAtual');}catch(e){}
-          try{window.sessionStorage.removeItem('chargeLog');}catch(e){}
-          try{window.sessionStorage.removeItem('chargeStartInfo');}catch(e){}
-          try{window.sessionStorage.removeItem('limiteCarregamento');}catch(e){}
+          // O reset da bateria e do estado será feito silenciosamente na própria página de Login!
           
           setTimeout(() => {
             window.location.href = "login.html";
