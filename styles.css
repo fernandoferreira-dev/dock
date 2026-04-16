@@ -89,3 +89,8 @@ body:not([data-theme="dark"]) #lista-notificacoes div {
 [data-theme="dark"] #pagamento-title {
   color: #F1F5F9 !important;
 }
+
+/* Título de Pagamento em Light Mode */
+body:not([data-theme="dark"]) #pagamento-title {
+  color: #F1F5F9 !important;
+}
