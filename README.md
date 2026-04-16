@@ -26,7 +26,7 @@ The frontend is continuously deployed via GitHub Pages upon pushing to the `main
 
 To test the UI bypass locally or via the web:
 1. Navigate to the `login.html` screen.
-2. Enter the hardcoded development testing code: `6767-6767`.
+2. Enter the hardcoded development testing code: `9241-9241`.
 
 ## Hardware Setup
 
