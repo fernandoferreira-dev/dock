@@ -83,3 +83,9 @@ body:not([data-theme="dark"]) #empty-state,
 body:not([data-theme="dark"]) #lista-notificacoes div {
   color: #F1F5F9 !important;
 }
+
+/* Títulos (Configurações e Pagamento) em Dark Mode para Branco (#F1F5F9) */
+[data-theme="dark"] #title,
+[data-theme="dark"] #pagamento-title {
+  color: #F1F5F9 !important;
+}
