@@ -26,7 +26,7 @@
         
         <!-- Bloco 1: Tema (Modo Escuro / Claro) -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full text-center">
-          <h2 class="text-lg font-bold text-[#F1F5F9] dark:text-[var(--font-color)] mb-3" id="theme-title">Aparência</h2>
+          <h2 class="text-lg font-bold mb-3" style="color: #F1F5F9 !important;" id="theme-title">Aparência</h2>
           <button onclick="toggleTheme()" class="w-full py-3 bg-[var(--font-color)] text-[var(--bg-color)] font-bold rounded-lg transition-colors border border-transparent hover:border-[var(--comp-color)]" id="btn-theme">
             Alternar Modo Noturno
           </button>
@@ -34,7 +34,7 @@
 
         <!-- Bloco 2: Idioma (Português / Inglês) -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full text-center">
-          <h2 class="text-lg font-bold text-[#F1F5F9] dark:text-[var(--font-color)] mb-3" id="lang-title">Idioma / Language</h2>
+          <h2 class="text-lg font-bold mb-3" style="color: #F1F5F9 !important;" id="lang-title">Idioma / Language</h2>
           <button onclick="toggleLanguage()" class="w-full py-3 bg-[var(--comp-color)] text-white font-bold rounded-lg transition-colors hover:opacity-80" id="btn-lang">
             Mudar para English
           </button>
@@ -42,7 +42,7 @@
 
         <!-- Bloco 3: Suporte (Enviar email ao Administrador) -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 w-full">
-          <h2 class="text-lg font-bold text-[#F1F5F9] dark:text-[var(--font-color)] mb-3 text-center" id="support-title">Falar com o Administrador</h2>
+          <h2 class="text-lg font-bold mb-3 text-center" style="color: #F1F5F9 !important;" id="support-title">Falar com o Administrador</h2>
           <input type="text" id="feedback_contact" class="w-full p-3 rounded-lg border-2 border-[var(--comp-color)]/50 focus:border-[var(--comp-color)] text-[#0F172A] focus:outline-none transition-colors mb-3" placeholder="O seu contacto (Email ou Telemóvel)">
           <textarea id="feedback_msg" rows="4" class="w-full p-3 rounded-lg border-2 border-[var(--comp-color)]/50 focus:border-[var(--comp-color)] text-[#0F172A] focus:outline-none transition-all resize-none mb-3" placeholder="A sua mensagem para o suporte..."></textarea>
           <div id="feedback_status" class="hidden text-sm font-bold text-center mb-3 p-2 rounded-lg transition-all duration-300"></div>
