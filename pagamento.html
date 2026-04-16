@@ -75,17 +75,21 @@
             const SUPABASE_URL = "https://cvzhdxfomjxawjwxjmnh.supabase.co";
             const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2emhkeGZvbWp4YXdqd3hqbW5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNjc0MzgsImV4cCI6MjA4ODk0MzQzOH0.t6cljClgMgGiCiInch1aYUaR-4v7d35HUYp2yh9mdyU";
             
-            // Define e guarda o limite para as notificações e inicia o Relógio Global de Carregamento
-            let limite = valorInteiro === 1 ? 30 : 100;
+            // Captura a bateria inicial ao iniciar o carregamento (por defeito 20% no reset)
+            let currBat = parseInt(window.sessionStorage.getItem('bateriaAtual')) || 20;
+
+            // Se pagou 1€ (opção 1), soma +30% à bateria. Se pagou a outra opção, vai ao máximo de 100%.
+            let limite = valorInteiro === 1 ? (currBat + 30) : 100;
+            if (limite > 100) limite = 100; // Limite físico não passa de 100
+
             try {
               window.sessionStorage.setItem('limiteCarregamento', limite.toString());
               
-              // Força o valor inicial da bateria aos 20% no exato momento do pagamento, e não só quando abre as páginas
-              window.sessionStorage.setItem('bateriaAtual', '20');
+              // Regista a bateria de início em vez de ser sempre 20 cravado
+              window.sessionStorage.setItem('bateriaAtual', currBat.toString());
               
-              // Regista o momento ZERO do carregamento para que TODAS as páginas (controlador, gráficos, index) 
-              // saibam derivar o progresso atual com base no tempo decorrido, mesmo se estiverem fechadas!
-              let startInfo = { tempoMs: Date.now(), startBattery: 20 };
+              // Regista o momento ZERO do carregamento para as matemáticas temporais
+              let startInfo = { tempoMs: Date.now(), startBattery: currBat };
               window.sessionStorage.setItem('chargeStartInfo', JSON.stringify(startInfo));
               window.sessionStorage.setItem('chargeLog', JSON.stringify([])); // Limpa gráficos velhos
             } catch(err) {

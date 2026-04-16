@@ -298,14 +298,13 @@
       let jaNotificou = false; // flag em memória para não spammar
 
       function gerarNotificacaoLimites(bateriaValue) {
-        // Exemplo: se pagou 1€, o limite é 30% (guardado no window.sessionStorage quando fez o bypass ou real)
         const limiteCarregamento = parseInt(safeGetItem('limiteCarregamento')) || 100;
         const b = parseInt(bateriaValue);
 
         if (!jaNotificou && b >= limiteCarregamento) {
           jaNotificou = true;
           
-          let novaMensagem = (window.t ? t("Sua trotinete atingiu o limite de carregamento (") : "Sua trotinete atingiu o limite de carregamento (") + b + "%).";
+          let novaMensagem = (window.t ? t("O seu crédito de carregamento terminou (") : "O seu crédito de carregamento terminou (") + b + "%).";
           
           let notificacoes = JSON.parse(safeGetItem('notificacoes') || '[]');
           notificacoes.unshift(novaMensagem); // põe no começo

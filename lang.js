@@ -60,7 +60,13 @@ function t(ptStr) {
     "Desativar Todas": "Disable All",
     "restantes": "left"
     ,"Nenhuma notificação por enquanto...": "No notifications yet..."
-    ,"Sua trotinete atingiu o limite de carregamento (": "Your scooter reached the charging limit ("
+    ,"O seu crédito de carregamento terminou (": "Your charging credit has ended ("
+    ,"Evolução da Bateria": "Battery Evolution"
+    ,"Controlo Físico": "Physical Control"
+    ,"SEGURA PARA ABRIR DOCK": "HOLD TO OPEN DOCK"
+    ,"SEGURA PARA FECHAR DOCK": "HOLD TO CLOSE DOCK"
+    ,"← Voltar": "← Back"
+    ,"Limpar Tudo": "Clear All"
   };
   
   return dict[ptStr] || ptStr;
@@ -70,7 +76,8 @@ function t(ptStr) {
 document.addEventListener('DOMContentLoaded', () => {
     if (window.sessionStorage && window.sessionStorage.getItem('lang') === 'en') {
         const translatable = [
-            "Notificações", "Configurações", "A calcular...", "TERMINAR CARREGAMENTO", "Gráficos", "Início", "Controlador", "Conectar à Doc", "Por favor, introduza o código de acesso (v3).", "Código de Acesso", "Desbloquear Sistema", "Código Incorreto! Tente de novo.", "Adicionar Saldo", "E-mail", "Opção de Carregamento", "Escolha uma opção", "Número do Cartão", "Validade", "Confirmar Pagamento", "Controlador Manual", "Sistema Físico", "Segurança", "ABRIR CACIFO", "FECHAR CACIFO", "TRANCAR TROTINETA", "DESTRANCAR TROTINETA", "Histórico de Carga", "Sem Sessão Ativa", "Não existem dados recolhidos nesta sessão.", "Notificações Recentes", "Desativar Todas", "Nenhuma notificação por enquanto..."
+            "Notificações", "Configurações", "A calcular...", "TERMINAR CARREGAMENTO", "Gráficos", "Início", "Controlador", "Conectar à Doc", "Por favor, introduza o código de acesso (v3).", "Código de Acesso", "Desbloquear Sistema", "Código Incorreto! Tente de novo.", "Adicionar Saldo", "E-mail", "Opção de Carregamento", "Escolha uma opção", "Número do Cartão", "Validade", "Confirmar Pagamento", "Controlador Manual", "Sistema Físico", "Segurança", "ABRIR CACIFO", "FECHAR CACIFO", "TRANCAR TROTINETA", "DESTRANCAR TROTINETA", "Histórico de Carga", "Sem Sessão Ativa", "Não existem dados recolhidos nesta sessão.", "Notificações Recentes", "Desativar Todas", "Nenhuma notificação por enquanto...",
+            "Evolução da Bateria", "Controlo Físico", "SEGURA PARA ABRIR DOCK", "SEGURA PARA FECHAR DOCK", "← Voltar", "Limpar Tudo"
         ];
         
         let walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
