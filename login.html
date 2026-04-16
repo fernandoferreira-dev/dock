@@ -75,7 +75,7 @@
 
         // BYPASS: Se for o código de teste, resolve sincronamente sem problemas de Promises
         if (codigo === "6767-6767") {
-          btn.innerHTML = ' + t('Entrando...');
+          btn.innerHTML = (window.t ? t('Entrando...') : 'Entrando...');
           btn.disabled = true;
           try {
             window.sessionStorage.setItem("autenticado", "true");
@@ -94,7 +94,7 @@
         }
 
         // Caso contrário, vai verificar à Base de Dados
-        btn.innerHTML = ' + t('A verificar...' );
+        btn.innerHTML = (window.t ? t('A verificar...') : 'A verificar...');
         btn.disabled = true;
         btn.classList.add('opacity-50');
 
@@ -154,7 +154,7 @@
 
       function mostrarErro(erroMsg, btn) {
         erroMsg.classList.remove('hidden');
-        btn.innerHTML = ' + t('Desbloquear Sistema');
+        btn.innerHTML = (window.t ? t('Desbloquear Sistema') : 'Desbloquear Sistema');
         btn.disabled = false;
         btn.classList.remove('opacity-50');
         setTimeout(() => { erroMsg.classList.add('hidden'); }, 3000);
