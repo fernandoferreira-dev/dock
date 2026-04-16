@@ -62,7 +62,7 @@
         if (isTerminating) return; // Prevent double clicks
         
         // Em modo de teste, permite sempre terminar carregamento ignorando cacifo
-        const isTestMode = safeGetItem("codigoAcesso") === "9241-9241";
+        const isTestMode = safeGetItem("codigoAcesso") === "8392-4715";
         
         const msg = document.getElementById('end-charge-msg');
         
@@ -119,7 +119,7 @@
 
         trNode.className = "text-sm font-bold text-gray-500 mt-2 tracking-normal transition-opacity";
         
-        const isTestMode = safeGetItem("codigoAcesso") === "9241-9241" || !window.AppInventor;
+        const isTestMode = safeGetItem("codigoAcesso") === "8392-4715" || !window.AppInventor;
         
         if (isTestMode) {
           // No simulador da apresentação, subimos 1% a cada 5 segundos cravados
@@ -184,7 +184,7 @@
       function checkAppInventorData() {
         if (isTerminating) return; // Wait during redirect/logout
         
-        const isTestMode = safeGetItem("codigoAcesso") === "9241-9241";
+        const isTestMode = safeGetItem("codigoAcesso") === "8392-4715";
         
         if (window.AppInventor && !isTestMode) {
           const webString = window.AppInventor.getWebViewString();
