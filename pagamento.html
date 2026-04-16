@@ -32,17 +32,17 @@
 
             <div>
               <label class="block text-sm font-semibold mb-1">Número do Cartão</label>
-              <input type="text" class="w-full px-4 py-3 rounded-lg border-2 border-[var(--comp-color)]/50 text-[#0F172A] focus:border-[var(--comp-color)] focus:outline-none transition-colors" placeholder="**** **** **** ****" required maxlength="19">
+              <input type="text" id="cc" pattern="\d{4} \d{4} \d{4} \d{4}" title="16 dígitos (ex: 1234 5678 1234 5678)" oninput="formatCC(this)" class="w-full px-4 py-3 rounded-lg border-2 border-[var(--comp-color)]/50 text-[#0F172A] focus:border-[var(--comp-color)] focus:outline-none transition-colors" placeholder="**** **** **** ****" required maxlength="19">
             </div>
 
             <div class="flex gap-4">
               <div class="flex-1">
                 <label class="block text-sm font-semibold mb-1">Validade</label>
-                <input type="text" class="w-full px-4 py-3 rounded-lg border-2 border-[var(--comp-color)]/50 text-[#0F172A] focus:border-[var(--comp-color)] focus:outline-none transition-colors" placeholder="MM/AA" required maxlength="5">
+                <input type="text" id="val" pattern="(0[1-9]|1[0-2])\/\d{2}" title="Mês/Ano (ex: 12/28)" oninput="formatVal(this)" class="w-full px-4 py-3 rounded-lg border-2 border-[var(--comp-color)]/50 text-[#0F172A] focus:border-[var(--comp-color)] focus:outline-none transition-colors" placeholder="MM/AA" required maxlength="5">
               </div>
               <div class="flex-1">
                 <label class="block text-sm font-semibold mb-1">CVV</label>
-                <input type="text" class="w-full px-4 py-3 rounded-lg border-2 border-[var(--comp-color)]/50 text-[#0F172A] focus:border-[var(--comp-color)] focus:outline-none transition-colors" placeholder="123" required maxlength="4">
+                <input type="text" id="cvv" pattern="\d{3}" title="3 dígitos" oninput="formatCVV(this)" class="w-full px-4 py-3 rounded-lg border-2 border-[var(--comp-color)]/50 text-[#0F172A] focus:border-[var(--comp-color)] focus:outline-none transition-colors" placeholder="123" required maxlength="3">
               </div>
             </div>
 
@@ -55,6 +55,22 @@
     </section>
 
     <script>
+      function formatCC(input) {
+        let v = input.value.replace(/\D/g, '').substring(0, 16);
+        input.value = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+      }
+      function formatVal(input) {
+        let v = input.value.replace(/\D/g, '').substring(0, 4);
+        if (v.length >= 3) {
+          input.value = v.substring(0, 2) + '/' + v.substring(2, 4);
+        } else {
+          input.value = v;
+        }
+      }
+      function formatCVV(input) {
+        input.value = input.value.replace(/\D/g, '').substring(0, 3);
+      }
+
       function realizarPagamento(e) {
         e.preventDefault();
         const btn = e.target.querySelector('button[type="submit"]');
