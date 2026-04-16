@@ -76,3 +76,10 @@ body:not([data-theme="dark"]) h2,
 body:not([data-theme="dark"]) h3 {
   color: #0F172A !important;
 }
+
+/* Texto das Notificações em Light Mode */
+body:not([data-theme="dark"]) #notificacoes-title,
+body:not([data-theme="dark"]) #empty-state,
+body:not([data-theme="dark"]) #lista-notificacoes div {
+  color: #F1F5F9 !important;
+}
